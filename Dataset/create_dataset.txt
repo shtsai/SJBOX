@@ -1,0 +1,50 @@
+CREATE SCHEMA SJBOX;
+USE SJBOX;
+
+CREATE TABLE `Artist` (
+    `ArtistId` VARCHAR(30) NOT NULL,
+    `ArtistTitle` VARCHAR(45) NOT NULL UNIQUE,
+    `ArtistDescription` VARCHAR(200) NULL,
+    PRIMARY KEY (`ArtistId`)
+);
+
+CREATE TABLE `Album` (
+    `AlbumId` VARCHAR(30) NOT NULL,
+    `AlbumName` VARCHAR(100) NOT NULL,
+    `AlbumReleaseDate` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (`AlbumId`)
+);
+
+CREATE TABLE `Track` (
+    `TrackId` VARCHAR(30) NOT NULL,
+    `TrackName` VARCHAR(100) NOT NULL,
+    `TrackDuration` INT NOT NULL,
+    `ArtistTitle` VARCHAR(45) NOT NULL,
+    `AlbumId` VARCHAR(30) NOT NULL,
+    PRIMARY KEY (`TrackId`),
+    FOREIGN KEY (`ArtistTitle`)
+        REFERENCES `Artist` (`ArtistTitle`),
+    FOREIGN KEY (`AlbumId`)
+        REFERENCES `Album` (`AlbumId`)  
+);
+
+CREATE TABLE `User` (
+    `Username` VARCHAR(15) NOT NULL,
+    `Name` VARCHAR(45) NOT NULL,
+    `Email` VARCHAR(45) NOT NULL,
+    `City` VARCHAR(45) NOT NULL,
+    `Password` VARCHAR(15) NOT NULL,
+    PRIMARY KEY (`Username`)
+);
+
+
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('JJJ', 'Jennie', 'jennie@gmail.com', 'New York', '123456');
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('SSS', 'Sean', 'sean@gmail.com', 'New York', '666666');
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('NancyInQueens', 'Nancy', 'nancy@gmail.com', 'New York', '222222');
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('CCC', 'Charson', 'charson@gmail.com', 'Taipei', '666222');
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('VVV', 'Vincent', 'vincent@gmail.com', 'Brooklyn', '777777');
+INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('MMM', 'Michael', 'michael@gmail.com', 'New York', '333333');
+
+LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/artists.csv' INTO TABLE Artist FIELDS TERMINATED BY ',' IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/albums.csv' INTO TABLE Album FIELDS TERMINATED BY ',' IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/tracks.csv' INTO TABLE Track FIELDS TERMINATED BY ',' IGNORE 1 LINES;
