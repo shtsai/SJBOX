@@ -8,7 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="./CSS/search.css">
+    <link rel="stylesheet" href="./CSS/track.css">
 </head>
 
 <body>
@@ -31,17 +31,25 @@
 
     if (isset($_GET['track'])) {
 	$trackId = $_GET['track'];
-	$search_track = $conn->prepare("SELECT TrackName, ArtistTitle 
-					FROM Artist NATURAL JOIN Track
+	$search_track = $conn->prepare("SELECT TrackName, ArtistTitle, AlbumName, TrackDuration
+					FROM Artist NATURAL JOIN Track NATURAL JOIN Album
 					WHERE TrackId = ?");
 	$search_track->bind_param('s', $trackId);
 	$search_track->execute();
 	$result = $search_track->get_result();
+	echo "<div id=\"info\">";
 	while ($row = $result->fetch_assoc()) {
-	    echo $row['TrackName'] . "<br>";
-	    echo $row['ArtistTitle'] . "<br>";
+	    echo "<p id=\"trackname\">" . $row['TrackName'] . "</p>";
+	    echo "<p id=\"artistTitle\">Artist: " . $row['ArtistTitle'] . "</p>";
+	    echo "<p id=\"albumname\">Album: " . $row['AlbumName'] . "</p>";
+	    echo "<p id=\"duration\">Duration: " . $row['TrackDuration'] . "ms</p>";
 	}
+	echo "</div>";
 	
+	echo "<div id=\"playwindow\">";
+	echo "<iframe src=\"https://open.spotify.com/embed?uri=spotify:track:" . $trackId 
+		. "\" frameborder=\"0\" width=\"720\" width=\"640\" allowtransparency=\"true\"></iframe>";
+	echo "</div>";
 
 	$search_track->close();
     }
