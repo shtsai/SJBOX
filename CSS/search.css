@@ -7,7 +7,7 @@ div#searchresult {
     margin-left: 50px;
 }
 
-table#resultTable th, td {
+table#resultTable {
     border:1px solid black;
     border-collapse: collapse;
     padding: 3px;

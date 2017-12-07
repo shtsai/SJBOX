@@ -21,7 +21,10 @@
     <div class="container" id="searchbar">
 	<form action="search.php" method="get">
 	    <input type="text" name="keyword" placeholder="Enter anything you like">
-	    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button>
+	    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button><br>
+	    <label for="option1"><input id="option1" type="radio" name="searchtype" value="TrackName" checked/>Track</label>
+	    <label for="option2"><input id="option2" type="radio" name="searchtype" value="ArtistTitle" />Artist</label>
+	    <label for="option3"><input id="option3" type="radio" name="searchtype" value="AlbumName" />Album</label>
 	</form>
     </div>
     <div id="searchresult">
@@ -35,12 +38,12 @@
     if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
     }
-
-    $search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
-				    FROM Artist NATURAL JOIN Track NATURAL JOIN Album
-				    WHERE ArtistTitle LIKE ?");
-
+    
     if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
+	$searchtype = $_GET['searchtype'];
+	$search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
+					FROM Artist NATURAL JOIN Track NATURAL JOIN Album
+					WHERE " . $searchtype . " LIKE ?");
 	$keyword = "%" . $_GET['keyword'] . "%";
 	$search_track->bind_param('s', $keyword);
 	$search_track->execute();
@@ -60,12 +63,12 @@
 	    echo "</tr>";
 	}	
 	echo "</table>";
+	$search_track->close();
     
     } else {
 	echo "Welcome to SJBOX! Start by searching your favoriate songs or artists.";    
     }
 
-    $search_track->close();
     $conn->close();
 
 ?>
