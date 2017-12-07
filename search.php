@@ -14,21 +14,15 @@
 <body>
     <div class="container">
 	<div class="row">
-	    <h1>Home Page</h1>
+	    <h1>Search Page</h1>
 	</div>
     </div>
 
     <div class="container" id="searchbar">
-	<div class="row">
-	    <div class="col-lg-3">
-		<div class="input-group custom-search-form">
-		    <form action="search.php" method="get">
-		    <input type="text" name="keyword" placeholder="Enter anything you like">
-		    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button>
-		    </form>
-		</div>
-	    </div>
-	</div>
+	<form action="search.php" method="get">
+	    <input type="text" name="keyword" placeholder="Enter anything you like">
+	    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button>
+	</form>
     </div>
     <div id="searchresult">
 <?php
@@ -42,11 +36,11 @@
 	die("Connection failed: " . $conn->connect_error);
     }
 
-    $search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle 
-				    FROM Artist NATURAL JOIN Track
+    $search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
+				    FROM Artist NATURAL JOIN Track NATURAL JOIN Album
 				    WHERE ArtistTitle LIKE ?");
 
-    if (isset($_GET['keyword'])) {
+    if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
 	$keyword = "%" . $_GET['keyword'] . "%";
 	$search_track->bind_param('s', $keyword);
 	$search_track->execute();
@@ -55,20 +49,20 @@
 	echo "<table id=\"resultTable\">";
 	echo "<tr>";
 	echo "<th>Track Name</th>";
+	echo "<th>Album</th>";
 	echo "<th>Artist</th>";
-	echo "<th></th>";
 	echo "</tr>";
 	while ($row = $result->fetch_assoc()) {
 	    echo "<tr>";
 	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
-	    echo "<td>" .$row['ArtistTitle'] . "</td>";
-	    echo "<td><input type=\"submit\" value=\"Play\"></td>";
+	    echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	    echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
 	    echo "</tr>";
 	}	
 	echo "</table>";
     
     } else {
-	echo "helloworld";    
+	echo "Welcome to SJBOX! Start by searching your favoriate songs or artists.";    
     }
 
     $search_track->close();

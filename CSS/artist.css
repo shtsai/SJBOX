@@ -1,0 +1,37 @@
+div#info {
+    margin-left: 150px;
+}
+
+p#artistTitle {
+    font-size: 200%;
+    margin: 0px;
+}
+
+p#description{
+    font-size: 100%;
+    margin: 0px;
+}
+
+div#albums {
+    margin-left: 150px;
+    margin-top: 50px;
+}
+
+table#albumtable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
+
+div#tracks{
+    margin-left: 150px;
+    margin-top: 50px;
+}
+
+table#tracktable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
