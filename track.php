@@ -14,23 +14,10 @@
 <body>
     <div class="container">
 	<div class="row">
-	    <h1>Home Page</h1>
+	    <h1>Track Page</h1>
 	</div>
     </div>
 
-    <div class="container" id="searchbar">
-	<div class="row">
-	    <div class="col-lg-3">
-		<div class="input-group custom-search-form">
-		    <form action="search.php" method="get">
-		    <input type="text" name="keyword" placeholder="Enter anything you like">
-		    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button>
-		    </form>
-		</div>
-	    </div>
-	</div>
-    </div>
-    <div id="searchresult">
 <?php
     $servername = "localhost";
     $username = "root";
@@ -42,40 +29,26 @@
 	die("Connection failed: " . $conn->connect_error);
     }
 
-    $search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle 
-				    FROM Artist NATURAL JOIN Track
-				    WHERE ArtistTitle LIKE ?");
-
-    if (isset($_GET['keyword'])) {
-	$keyword = "%" . $_GET['keyword'] . "%";
-	$search_track->bind_param('s', $keyword);
+    if (isset($_GET['track'])) {
+	$trackId = $_GET['track'];
+	$search_track = $conn->prepare("SELECT TrackName, ArtistTitle 
+					FROM Artist NATURAL JOIN Track
+					WHERE TrackId = ?");
+	$search_track->bind_param('s', $trackId);
 	$search_track->execute();
 	$result = $search_track->get_result();
-	echo $result->num_rows . "results:";
-	echo "<table id=\"resultTable\">";
-	echo "<tr>";
-	echo "<th>Track Name</th>";
-	echo "<th>Artist</th>";
-	echo "<th></th>";
-	echo "</tr>";
 	while ($row = $result->fetch_assoc()) {
-	    echo "<tr>";
-	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
-	    echo "<td>" .$row['ArtistTitle'] . "</td>";
-	    echo "<td><input type=\"submit\" value=\"Play\"></td>";
-	    echo "</tr>";
-	}	
-	echo "</table>";
-    
-    } else {
-	echo "helloworld";    
+	    echo $row['TrackName'] . "<br>";
+	    echo $row['ArtistTitle'] . "<br>";
+	}
+	
+
+	$search_track->close();
     }
 
-    $search_track->close();
     $conn->close();
 
 ?>
-    </div>
 
 
 <!-- Optional JavaScript -->
