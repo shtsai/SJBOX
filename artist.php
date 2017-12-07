@@ -40,7 +40,7 @@
 	$info_result = $artist_info->get_result();
 	echo "<div id=\"info\">";
 	while ($row = $info_result->fetch_assoc()) {
-	    echo "<p id=\"artistTitle\">" . $row['ArtistTitle'] . "</p>";
+	    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $artistId . "\">" .$row['ArtistTitle'] . "</a></p>";
 	    echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
 	    $artistTitle = $row['ArtistTitle'];
 	}
@@ -51,7 +51,7 @@
 	$albums= $conn->prepare("SELECT DISTINCT AlbumId, AlbumName, AlbumReleaseDate
 				 FROM Artist NATURAL JOIN Track NATURAL JOIN Album
 				 WHERE ArtistId = ?
-				 ORDER BY AlbumReleaseDate DESC");
+				 ORDER BY AlbumReleaseDate DESC, AlbumName");
 	$albums->bind_param('s', $artistId);
 	$albums->execute();
 	$albums_result = $albums->get_result();
