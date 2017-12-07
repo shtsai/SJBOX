@@ -17,17 +17,48 @@
 	</div>
     </div>
 
-    <div class="container">
+    <div class="container" id="searchbar">
 	<div class="row">
 	    <div class="col-lg-3">
 		<div class="input-group custom-search-form">
-		    <form action="search.php">
-		    <input type="text" placeholder="Enter anything you like">
+		    <form action="search.php" method="get">
+		    <input type="text" name="keyword" placeholder="Enter anything you like">
 		    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button>
 		    </form>
 		</div>
 	    </div>
 	</div>
+    </div>
+
+    <div id=searchresult>
+<?php
+    $servername = "localhost";
+    $username = "root";
+    $password = "A123456j*";
+    $dbname = "SJBOX";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+    }
+
+    $search_track = $conn->prepare("SELECT TrackName, ArtistTitle 
+				    FROM Artist NATURAL JOIN Track
+				    WHERE ArtistTitle LIKE ?");
+
+    $keyword = "%" . $_GET['keyword'] . "%";
+    echo $keyword;
+    $search_track->bind_param('s', $keyword);
+
+    $search_track->execute();
+    $result = $search_track->get_result();
+    echo $result->num_rows;
+    echo "helloworld";
+
+    $search_track->close();
+    $conn->close();
+
+?>
     </div>
 
 
