@@ -39,11 +39,14 @@
 	$album_info->execute();
 	$info_result = $album_info->get_result();
 	echo "<div id=\"info\">";
-	while ($row = $info_result->fetch_assoc()) {
-	    echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
+	$row = $info_result->fetch_assoc();
+	$tmp_release = $row['AlbumReleaseDate'];
+	echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
+	echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
+	while ($row = $info_result->fetch_assoc()) {  // might have multiple artists
 	    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
-	    echo "<p id=\"release\">Release date: " . $row['AlbumReleaseDate'] . "</p>";
 	}
+	echo "<p id=\"release\">Release date: " . $tmp_release . "</p>";
 	echo "</div>";
  	$album_info->close();
 
