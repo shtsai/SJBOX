@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="./CSS/search.css">
 </head>
 
 <body>
@@ -29,8 +30,7 @@
 	    </div>
 	</div>
     </div>
-
-    <div id=searchresult>
+    <div id="searchresult">
 <?php
     $servername = "localhost";
     $username = "root";
@@ -46,14 +46,25 @@
 				    FROM Artist NATURAL JOIN Track
 				    WHERE ArtistTitle LIKE ?");
 
-    $keyword = "%" . $_GET['keyword'] . "%";
-    echo $keyword;
-    $search_track->bind_param('s', $keyword);
-
-    $search_track->execute();
-    $result = $search_track->get_result();
-    echo $result->num_rows;
-    echo "helloworld";
+    if ($_GET['keyword'] != "") {
+	$keyword = "%" . $_GET['keyword'] . "%";
+	$search_track->bind_param('s', $keyword);
+	$search_track->execute();
+	$result = $search_track->get_result();
+	echo $result->num_rows . "results:";
+	echo "<table id=\"resultTable\">";
+	while ($row = $result->fetch_assoc()) {
+	    echo "<tr>";
+	    echo "<td>" . $row['TrackName'] . "</td>";
+	    echo "<td>" .$row['ArtistTitle'] . "</td>";
+	    echo "<td><input type=\"submit\" value=\"Play\"></td>";
+	    echo "</tr>";
+	}	
+	echo "</table>";
+    
+    } else {
+	echo "helloworld";    
+    }
 
     $search_track->close();
     $conn->close();
