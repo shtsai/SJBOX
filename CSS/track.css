@@ -1,0 +1,27 @@
+div#info {
+    margin-left: 150px;
+}
+
+p#trackname {
+    font-size: 200%;
+}
+
+p#artistTitle {
+    font-size: 120%;
+    margin: 0px;
+}
+
+p#albumname{
+    font-size: 100%;
+    margin: 0px;
+}
+
+p#duration{
+    font-size: 100%;
+    margin: 0px;
+}
+
+div#playwindow {
+    margin-top: 20px;
+    margin-left: 150px;
+}
