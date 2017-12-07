@@ -8,13 +8,13 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="./CSS/track.css">
+    <link rel="stylesheet" href="./CSS/album.css">
 </head>
 
 <body>
     <div class="container">
 	<div class="row">
-	    <h1>Track Page</h1>
+	    <h1>Album Page</h1>
 	</div>
     </div>
 
@@ -29,29 +29,42 @@
 	die("Connection failed: " . $conn->connect_error);
     }
 
-    if (isset($_GET['track'])) {
-	$trackId = $_GET['track'];
-	$search_track = $conn->prepare("SELECT TrackName, ArtistTitle, ArtistId, AlbumName, AlbumId, TrackDuration
-					FROM Artist NATURAL JOIN Track NATURAL JOIN Album
-					WHERE TrackId = ?");
-	$search_track->bind_param('s', $trackId);
-	$search_track->execute();
-	$result = $search_track->get_result();
+    if (isset($_GET['album'])) {
+	// get artist info
+	$albumId = $_GET['album'];
+	$album_info = $conn->prepare("SELECT DISTINCT AlbumName, AlbumReleaseDate, ArtistTitle, ArtistId
+				      FROM Album NATURAL JOIN Track NATURAL JOIN Artist
+				      WHERE AlbumId = ?");
+	$album_info->bind_param('s', $albumId);
+	$album_info->execute();
+	$info_result = $album_info->get_result();
 	echo "<div id=\"info\">";
-	while ($row = $result->fetch_assoc()) {
-	    echo "<p id=\"trackname\">" . $row['TrackName'] . "</p>";
-	    echo "<p id=\"artistTitle\">Artist: <a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
-	    echo "<p id=\"albumname\">Album: <a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></p>";
-	    echo "<p id=\"duration\">Duration: " . $row['TrackDuration'] . "ms</p>";
+	while ($row = $info_result->fetch_assoc()) {
+	    echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
+	    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
+	    echo "<p id=\"release\">Release date: " . $row['AlbumReleaseDate'] . "</p>";
 	}
 	echo "</div>";
-	
-	echo "<div id=\"playwindow\">";
-	echo "<iframe src=\"https://open.spotify.com/embed?uri=spotify:track:" . $trackId 
-		. "\" frameborder=\"0\" width=\"720\" width=\"640\" allowtransparency=\"true\"></iframe>";
-	echo "</div>";
+ 	$album_info->close();
 
-	$search_track->close();
+	// get album tracks
+	$tracks= $conn->prepare("SELECT TrackId, TrackName
+				 FROM Track NATURAL JOIN Album
+				 WHERE AlbumId = ?");
+	$tracks->bind_param('s', $albumId);
+	$tracks->execute();
+	$tracks_result = $tracks->get_result();
+	echo "<div id=\"tracks\">";
+	echo "Here are the tracks in this album.";
+	echo "<table id=\"tracktable\">";
+	while ($row = $tracks_result->fetch_assoc()) {
+	    echo "<tr>";
+	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
+	    echo "</tr>";
+	}
+	echo "</table>";
+	echo "</div>";
+ 	$albums->close();
     }
 
     $conn->close();
