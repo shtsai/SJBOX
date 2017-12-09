@@ -9,8 +9,7 @@
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
       <!-- login CSS -->
-      <style><?php include 'login.css'; ?></style> 
-
+      <style><?php include 'CSS/login.css'; ?></style> 
 <script>
 function showPassword() {
     
@@ -31,29 +30,28 @@ function showPassword() {
 }
 </script>
 </head>
-    <body>
+<body>
 <section id="login">
     <div class="container">
     	<div class="row">
     	    <div class="col-xs-12">
         	    <div class="form-wrap">
-                <h1>Log in with your email account</h1>
-                    <form role="form" action="javascript:;" method="post" id="login-form" autocomplete="off">
+                <h1>Log in with your name and passward</h1>
+                    <form role="form" action="login.php" method="get" id="login-form" autocomplete="off">
                         <div class="form-group">
-                            <label for="email" class="sr-only">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com">
+                            <label for="name" class="sr-only">Name</label>
+                            <input type="name" name="name" id="name" class="form-control" placeholder="Name">
                         </div>
                         <div class="form-group">
-                            <label for="key" class="sr-only">Password</label>
-                            <input type="password" name="key" id="key" class="form-control" placeholder="Password">
+                            <label for="password" class="sr-only">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
                         </div>
-                        <div class="checkbox">
-                            <span class="character-checkbox" onclick="showPassword()"></span>
-                            <span class="label">Show password</span>
-                        </div>
+                        <div class="checkbox"> <span class="character-checkbox" onclick="showPassword()"></span> <span class="label">Show password</span> </div>
                         <input type="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Log in">
                     </form>
-                    <a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a>
+		<!--<a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a> -->
+		    <a href="register.php">Register now</a>
+
                     <hr>
         	    </div>
     		</div> <!-- /.col-xs-12 -->
@@ -61,27 +59,58 @@ function showPassword() {
     </div> <!-- /.container -->
 </section>
 
-<div class="modal fade forget-modal" tabindex="-1" role="dialog" aria-labelledby="myForgetModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">×</span>
-					<span class="sr-only">Close</span>
-				</button>
-				<h4 class="modal-title">Recovery password</h4>
-			</div>
-			<div class="modal-body">
-				<p>Type your email account</p>
-				<input type="email" name="recovery-email" id="recovery-email" class="form-control" autocomplete="off">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-custom">Recovery</button>
-			</div>
-		</div> <!-- /.modal-content -->
-	</div> <!-- /.modal-dialog -->
-</div> <!-- /.modal -->
+<?php
+    $servername = "localhost";
+    $username = "root";
+    $password = "A123456j*";
+    $dbname = "SJBOX";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+    }
+
+    if (isset($_GET['name'])) {
+	// get artist info
+        //echo "into get artist info";
+	$userName = $_GET['name'];
+        $password = $_GET['password'];
+        //echo $password;
+	$user_info = $conn->prepare("SELECT Username 
+				       FROM User 
+				       WHERE Username = ?");
+	$user_info->bind_param('s', $userName);
+	$user_info->execute();
+        $r = $user_info->get_result();
+        $r2 = $r->fetch_assoc();
+        if(!$r2){
+            echo "<script>alert('Your name is wrong.');</script>";
+            echo "<script>window.location.href= 'login.php';</script>";
+        }
+        else{
+            $r->close();
+            $r1 = $conn->prepare("SELECT * FROM User WHERE Username =? AND Password=?");
+            $r1->bind_param("ss", $userName, $password);
+            $r1->execute();
+            $r3 = $r1->get_result();
+            $result = $r3->fetch_assoc();
+            if(!$result){
+                echo "<script>alert('Please check your password.');</script>";
+                echo "<script>window.location.href= 'login.php';</script>";
+            }
+	    else{
+                //set session
+                session_start();
+                $_SESSION['Username'] = $result['Username'];
+                $r1->close();
+		echo "<script>alert('Success!');</script>";
+                echo "<script>window.location.href= 'userInfo.php';</script>";
+
+	    }
+	}
+    }
+
+?>
 
       <!-- Optional JavaScript -->
       <!-- jQuery first, then Popper.js, then Bootstrap JS -->

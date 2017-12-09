@@ -38,6 +38,28 @@ CREATE TABLE `User` (
     PRIMARY KEY (`Username`)
 );
 
+CREATE TABLE `Likes` (
+    `ArtistId` VARCHAR(30) NOT NULL,
+    `Username` VARCHAR(15) NOT NULL,
+    `LikeDate` DATETIME NOT NULL,
+    PRIMARY KEY (`ArtistId`, `Username`),
+    FOREIGN KEY (`ArtistId`)
+        REFERENCES `Artist` (`ArtistId`), 
+    FOREIGN KEY (`Username`)
+        REFERENCES `User` (`Username`) 
+);
+
+CREATE TABLE `Follow` (
+    `Username1` VARCHAR(15) NOT NULL,
+    `Username2` VARCHAR(15) NOT NULL,
+    `FollowDate` DATETIME NOT NULL,
+    PRIMARY KEY (`Username1`, `Username2`),
+    FOREIGN KEY (`Username1`)
+        REFERENCES `User` (`Username`), 
+    FOREIGN KEY (`Username2`)
+        REFERENCES `User` (`Username`) 
+);
+
 
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('JJJ', 'Jennie', 'jennie@gmail.com', 'New York', '123456');
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('SSS', 'Sean', 'sean@gmail.com', 'New York', '666666');
@@ -49,3 +71,30 @@ INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('MM
 LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/artists.csv' INTO TABLE Artist FIELDS TERMINATED BY ',' IGNORE 1 LINES;
 LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/albums.csv' INTO TABLE Album FIELDS TERMINATED BY ',' IGNORE 1 LINES;
 LOAD DATA LOCAL INFILE '/var/www/html/SJBOX/Dataset/tracks.csv' INTO TABLE Track FIELDS TERMINATED BY ',' IGNORE 1 LINES;
+
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('001aJOc7CSQVo3XzoLG4DK', 'JJJ', '2017-12-04 13:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('00FQb4jTyendYWaN8pK0wa', 'JJJ', '2017-12-09 12:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('00YTqRClk82aMchQQpYMd5', 'JJJ', '2017-12-13 15:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('014WIDx7H4BRCHB1faiisK', 'JJJ', '2017-12-01 12:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('01N1aZStXA4yGvkz4vRXtJ', 'JJJ', '2017-12-30 17:10:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('01Ppu7N8uYJI8SAONo2YZA', 'JJJ', '2017-12-31 12:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('001aJOc7CSQVo3XzoLG4DK', 'MMM', '2017-12-01 12:09:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('00FQb4jTyendYWaN8pK0wa', 'SSS', '2017-12-01 15:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('00YTqRClk82aMchQQpYMd5', 'VVV', '2017-12-01 02:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('014WIDx7H4BRCHB1faiisK', 'NancyInQueens', '2017-12-01 12:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('01N1aZStXA4yGvkz4vRXtJ', 'CCC', '2017-12-01 11:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('01Ppu7N8uYJI8SAONo2YZA', 'MMM', '2017-12-01 12:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('001aJOc7CSQVo3XzoLG4DK', 'SSS', '2017-12-07 13:01:00');
+INSERT INTO `Likes` (`ArtistId`, `Username`, `LikeDate`) VALUES ('01Ppu7N8uYJI8SAONo2YZA', 'SSS', '2017-12-15 13:01:00');
+
+
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('JJJ', 'SSS', '2017-12-01 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('NancyInQueens', 'JJJ', '2017-12-01 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('NancyInQueens', 'SSS', '2017-12-10 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('NancyInQueens', 'CCC', '2017-12-01 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('SSS', 'JJJ', '2017-12-01 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('MMM', 'JJJ', '2017-12-11 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('VVV', 'JJJ', '2017-01-01 12:01:00');
+INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('CCC', 'JJJ', '2017-02-01 12:01:00');
+
+
