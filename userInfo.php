@@ -20,28 +20,41 @@
 <body>
 <?php include("./includes/navigation_bar.html"); ?>
 
-    <div class="container">
-	<div class="row">
-	    <h1>User Page</h1>
-	</div>
+    <div id="title">
+	<?php echo "<h1>Hello! " . $_SESSION['Username'] . "</h1>"; ?>
     </div>
 
 <?php
     // get userName from session
     $userName = $_SESSION['Username'];
-    echo "<p>Hello " . $userName . "!</p>";
+
+    //show user info 
+    $r1 = $conn->prepare("SELECT * FROM User WHERE Username = ?");
+    $r1->bind_param('s', $userName);
+    $r1->execute();
+   
+    $info_result = $r1->get_result();
+    echo "<div id=\"info\">";
+    while ($row = $info_result->fetch_assoc()) {
+	echo "<p>Username: " . $row['Username'] . "</p>";
+	echo "<p>Name: " . $row['Name'] . "</p>";
+	echo "<p>Email: " . $row['Email'] . "</p>";
+	echo "<p>City: " . $row['City'] . "</p>";
+    }
+    echo "</div>";
+    $r1->close();
+
     
     //show likes
     $likes = $conn->prepare("SELECT ArtistId, ArtistTitle, ArtistDescription
 			    FROM User NATURAL JOIN Likes NATURAL JOIN Artist
-			    WHERE Username =?");
-    //echo "likes" . isset($likes) . $userName;
+			    WHERE Username = ?");
     $likes->bind_param("s", $userName);
     $likes->execute();
     $likes_result = $likes->get_result();
-    echo "<div id=\"albums\">";
-    echo "The artist you like: ";
-    echo "<table id=\"albumtable\">";
+    echo "<div id=\"artist\">";
+    echo "The artists you like: ";
+    echo "<table id=\"artisttable\">";
 
     while ($row = $likes_result->fetch_assoc()) {
 	echo "<tr>";

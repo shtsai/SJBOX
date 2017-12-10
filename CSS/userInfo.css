@@ -1,0 +1,33 @@
+div#title {
+    margin-left: 90px;
+}
+
+div#info {
+    margin-left: 90px;
+}
+
+div#artist {
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-top: 20px;
+}
+
+#artisttable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
+
+div#follow{
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-top: 50px;
+}
+
+#followtable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
