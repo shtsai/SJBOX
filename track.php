@@ -12,6 +12,8 @@
 </head>
 
 <body>
+<?php include("./includes/navigation_bar.html"); ?>
+
     <div class="container">
 	<div class="row">
 	    <h1>Track Page</h1>
