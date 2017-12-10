@@ -1,3 +1,14 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (!isset($_SESSION['Username'])) {
+	header("Location: logout.php");
+    } else if (!isset($_GET['name']) || $_GET['name'] == '') {
+	header("location: userInfo.php");
+    }
+    include('ini_db.php');
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,10 +19,6 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <!-- login CSS -->
-      <style><?php include 'CSS/login.css'; ?></style> 
-
-    <!--<link rel="stylesheet" href="./CSS/user.css">-->
 </head>
 
 <body>
@@ -33,81 +40,69 @@
     </div>
 
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "A123456j*";
-    $dbname = "SJBOX";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
-    }
-    session_start();
     echo "The user of this section is: " . $_SESSION['Username'];
 
-    if (isset($_GET['name'])) {
-	// get artist info
-	$userName = $_GET['name'];
+    // get artist info
+    $userName = $_GET['name'];
 
-        //show user info 
-        $r1 = $conn->prepare("SELECT * FROM User WHERE Username = ?");
-        $r1->bind_param('s', $userName);
-        $r1->execute();
-       
-        $info_result = $r1->get_result();
-        //echo "<div id=\"info\">";
-        while ($row = $info_result->fetch_assoc()) {
-            echo "<p>" . $row['Name'] . "!</p>";
-            //echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
-            //$artistTitle = $row['ArtistTitle'];
-        }
-        //echo "</div>";
-        $r1->close();
-        
-
-        //show likes
-        $likes = $conn->prepare("SELECT ArtistTitle, ArtistDescription
-                                FROM User NATURAL JOIN Likes NATURAL JOIN Artist
-                                WHERE uname = ?");
-        $likes->bind_param('s', $userName);
-        $likes->execute();
-        $likes_result = $likes->get_result();
-        echo "<div id=\"albums\">";
-        echo "The artist you like: ";
-        echo "<table id=\"albumtable\">";
-
-        while ($row = $likes_result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
-            echo "<td>" . $row['ArtistDescription'] . "</td>"; 
-            echo "</tr>";
-        }
-        echo "</table>";
-        echo "</div>";
-        $likes->close();
-
-
-        //show follow user
-        $follow= $conn->prepare("SELECT Username2  
-                                 FROM User NATURAL JOIN Follow
-                                 WHERE Username1 = ?");
-        $follow->bind_param('s', $userName);
-        $follow->execute();
-        $follow_result = $follow->get_result();
-        echo "<div id=\"follow\">";
-        echo "The user you follow:";
-        echo "<table id=\"followtable\">";
-        while ($row = $follow_result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td><a href=\"FollowUserInfo.php?track=" . $row['Username2'] . "\">" . $row['UserName'] . "</a></td>";  //here need to change
-            //echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-        //echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
-        echo "</div>";
-        $follow->close();
+    //show user info 
+    $r1 = $conn->prepare("SELECT * FROM User WHERE Username = ?");
+    $r1->bind_param('s', $userName);
+    $r1->execute();
+   
+    $info_result = $r1->get_result();
+    //echo "<div id=\"info\">";
+    while ($row = $info_result->fetch_assoc()) {
+	echo "<p>" . $row['Name'] . "!</p>";
+	//echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
+	//$artistTitle = $row['ArtistTitle'];
     }
+    //echo "</div>";
+    $r1->close();
+    
+
+    //show likes
+    $likes = $conn->prepare("SELECT ArtistTitle, ArtistDescription
+			    FROM User NATURAL JOIN Likes NATURAL JOIN Artist
+			    WHERE uname = ?");
+    $likes->bind_param('s', $userName);
+    $likes->execute();
+    $likes_result = $likes->get_result();
+    echo "<div id=\"albums\">";
+    echo "The artist you like: ";
+    echo "<table id=\"albumtable\">";
+
+    while ($row = $likes_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
+	echo "<td>" . $row['ArtistDescription'] . "</td>"; 
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "</div>";
+    $likes->close();
+
+
+    //show follow user
+    $follow= $conn->prepare("SELECT Username2  
+			     FROM User NATURAL JOIN Follow
+			     WHERE Username1 = ?");
+    $follow->bind_param('s', $userName);
+    $follow->execute();
+    $follow_result = $follow->get_result();
+    echo "<div id=\"follow\">";
+    echo "The user you follow:";
+    echo "<table id=\"followtable\">";
+    while ($row = $follow_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"FollowUserInfo.php?track=" . $row['Username2'] . "\">" . $row['UserName'] . "</a></td>";  //here need to change
+	//echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	echo "</tr>";
+    }
+    echo "</table>";
+    //echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
+    echo "</div>";
+    $follow->close();
     $conn->close();
 
 ?>

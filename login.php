@@ -1,3 +1,11 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (isset($_SESSION['Username'])) {
+	header("Location: userInfo.php");
+    }
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -95,7 +103,6 @@ function showPassword() {
             }
 	    else{
                 //set session
-                session_start();
                 $_SESSION['Username'] = $result['Username'];
                 $r1->close();
 		echo "<script>alert('Success!');</script>";
