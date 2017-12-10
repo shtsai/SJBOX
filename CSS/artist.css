@@ -1,5 +1,5 @@
 div#info {
-    margin-left: 150px;
+    margin-left: 90px;
 }
 
 p#artistTitle {
@@ -12,8 +12,29 @@ p#description{
     margin: 0px;
 }
 
+div#likebutton {
+    margin-left: 90px;
+    margin-bottom: 10px;
+}
+
+#likebutton input {
+    background-color: dodgerblue;
+    border: 2px solid dodgerblue;
+    color: white;
+    padding: 8px 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 12px;
+}
+
+#likebutton input:hover {
+    background-color: white;
+    color: black;
+}
+
 div#albums {
-    margin-left: 150px;
+    margin-left: 90px;
     margin-top: 50px;
 }
 
@@ -25,7 +46,7 @@ table#albumtable th, td {
 }
 
 div#tracks{
-    margin-left: 150px;
+    margin-left: 90px;
     margin-top: 50px;
 }
 

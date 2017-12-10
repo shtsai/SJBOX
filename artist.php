@@ -1,3 +1,14 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (!isset($_SESSION['Username'])) {
+	header("Location: logout.php");
+    } else if (!isset($_GET['artist']) || $_GET['artist'] == '') {
+	header("location: userInfo.php");
+    }
+    include('ini_db.php');
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,86 +23,89 @@
 </head>
 
 <body>
-<?php include("./includes/navigation_bar.html"); ?>
+<?php 
+    include("./includes/navigation_bar.html"); 
 
-    <div class="container">
-	<div class="row">
-	    <h1>Artist Page</h1>
-	</div>
-    </div>
+    // get artist info
+    $artistId = $_GET['artist'];
+    $artist_info = $conn->prepare("SELECT * 
+				   FROM Artist 
+				   WHERE ArtistId = ?");
+    $artist_info->bind_param('s', $artistId);
+    $artist_info->execute();
+    $info_result = $artist_info->get_result();
+    echo "<div id=\"info\">";
+    echo "<h1>Artist Page</h1>";
+    while ($row = $info_result->fetch_assoc()) {
+	echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $artistId . "\">" .$row['ArtistTitle'] . "</a></p>";
+	echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
+	$artistTitle = $row['ArtistTitle'];
+    }
+    echo "</div>";
+    $artist_info->close();
 
-<?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "A123456j*";
-    $dbname = "SJBOX";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
+    // check like status
+    $check_like =   "SELECT *
+		     FROM Likes
+		     WHERE Username = \"" . $_SESSION["Username"] . 
+		     "\" AND ArtistId = \"" . $artistId . "\"";
+    $check_result = $conn->query($check_like);
+    if (($check_result->num_rows) > 0) {
+	$status = "Unlike";
+    } else {
+	$status = "Like";
     }
 
-    if (isset($_GET['artist'])) {
-	// get artist info
-	$artistId = $_GET['artist'];
-	$artist_info = $conn->prepare("SELECT * 
-				       FROM Artist 
-				       WHERE ArtistId = ?");
-	$artist_info->bind_param('s', $artistId);
-	$artist_info->execute();
-	$info_result = $artist_info->get_result();
-	echo "<div id=\"info\">";
-	while ($row = $info_result->fetch_assoc()) {
-	    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $artistId . "\">" .$row['ArtistTitle'] . "</a></p>";
-	    echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
-	    $artistTitle = $row['ArtistTitle'];
-	}
-	echo "</div>";
- 	$artist_info->close();
+    echo "<div id=\"likebutton\">";
+    echo "<form action=\"likes.php\" method=\"post\">";
+    echo "<input type=\"hidden\" name=\"artist\" value=" . $artistId . ">"; 
+    echo "<input type=\"hidden\" name=\"action\" value=" . $status . ">"; 
+    echo "<input type=\"submit\" value=" . $status . ">"; 
+    echo "</form>";
+    echo "</div>";
 
-	// get artist albums
-	$albums= $conn->prepare("SELECT DISTINCT AlbumId, AlbumName, AlbumReleaseDate
-				 FROM Artist NATURAL JOIN Track NATURAL JOIN Album
-				 WHERE ArtistId = ?
-				 ORDER BY AlbumReleaseDate DESC, AlbumName");
-	$albums->bind_param('s', $artistId);
-	$albums->execute();
-	$albums_result = $albums->get_result();
-	echo "<div id=\"albums\">";
-	echo $artistTitle . " has " . $albums_result->num_rows . " albums:";
-	echo "<table id=\"albumtable\">";
-	while ($row = $albums_result->fetch_assoc()) {
-	    echo "<tr>";
-	    echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
-	    echo "<td>" . $row['AlbumReleaseDate'] . "</td>";
-	    echo "</tr>";
-	}
-	echo "</table>";
-	echo "</div>";
- 	$albums->close();
-
-	// get artist tracks
-	$tracks= $conn->prepare("SELECT TrackId, TrackName, AlbumId, AlbumName  
-				 FROM Artist NATURAL JOIN Track NATURAL JOIN Album
-				 WHERE ArtistId = ?
-				 LIMIT 20");
-	$tracks->bind_param('s', $artistId);
-	$tracks->execute();
-	$tracks_result = $tracks->get_result();
-	echo "<div id=\"tracks\">";
-	echo $artistTitle . "'s Top 20 songs";
-	echo "<table id=\"tracktable\">";
-	while ($row = $tracks_result->fetch_assoc()) {
-	    echo "<tr>";
-	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
-	    echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
-	    echo "</tr>";
-	}
-	echo "</table>";
-	echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
-	echo "</div>";
- 	$albums->close();
+    // get artist albums
+    $albums= $conn->prepare("SELECT DISTINCT AlbumId, AlbumName, AlbumReleaseDate
+			     FROM Artist NATURAL JOIN Track NATURAL JOIN Album
+			     WHERE ArtistId = ?
+			     ORDER BY AlbumReleaseDate DESC, AlbumName");
+    $albums->bind_param('s', $artistId);
+    $albums->execute();
+    $albums_result = $albums->get_result();
+    echo "<div id=\"albums\">";
+    echo $artistTitle . " has " . $albums_result->num_rows . " albums:";
+    echo "<table id=\"albumtable\">";
+    while ($row = $albums_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	echo "<td>" . $row['AlbumReleaseDate'] . "</td>";
+	echo "</tr>";
     }
+    echo "</table>";
+    echo "</div>";
+    $albums->close();
+
+    // get artist tracks
+    $tracks= $conn->prepare("SELECT TrackId, TrackName, AlbumId, AlbumName  
+			     FROM Artist NATURAL JOIN Track NATURAL JOIN Album
+			     WHERE ArtistId = ?
+			     LIMIT 20");
+    $tracks->bind_param('s', $artistId);
+    $tracks->execute();
+    $tracks_result = $tracks->get_result();
+    echo "<div id=\"tracks\">";
+    echo $artistTitle . "'s Top 20 songs";
+    echo "<table id=\"tracktable\">";
+    while ($row = $tracks_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
+	echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
+    echo "</div>";
+    $albums->close();
 
     $conn->close();
 
