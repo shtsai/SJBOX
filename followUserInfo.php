@@ -22,6 +22,8 @@
 </head>
 
 <body>
+<?php include("./includes/navigation_bar.html"); ?>
+
     <ul class="nav nav-tabs">
       <li role="presentation" class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
