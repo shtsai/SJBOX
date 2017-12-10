@@ -1,3 +1,11 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (isset($_SESSION['Username'])) {
+	header("Location: userInfo.php");
+    }
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,13 +16,11 @@
 
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-      <!-- login CSS -->
-      <style><?php include 'CSS/register.css'; ?></style> 
-
+      <link rel="stylesheet" href="CSS/register.css">
 </head>
 <!--<body bgcolor="#ffe4db">-->
-<body>
 
+<body>
 <section id="register">
     <div class="container">
     	<div class="row">
@@ -45,9 +51,6 @@
                         </div>
                         <input type="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
                     </form>
-		<!--<a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a> -->
-		<!--<a href="register.php" class="forget" data-toggle="modal" data-target=".forget-modal">Register now</a>-->
-
                     <hr>
         	    </div>
     		</div> <!-- /.col-xs-12 -->
