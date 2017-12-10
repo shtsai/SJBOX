@@ -19,31 +19,39 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="./CSS/followUserInfo.css">
 </head>
 
 <body>
 <?php include("./includes/navigation_bar.html"); ?>
 
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          Back to<span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu"><a href="search.php">Search page</a>
-
-        </ul>
-      </li>
-    </ul>
-
-    <div class="container">
-	<div class="row">
-	    <h1>User Page</h1>
-	</div>
+    <div id="title">
+	<?php echo "<h1>" . $_GET['name'] . "'s Page</h1>"; ?>
+    </div>
+<?php
+    // check whether following or not
+    $check_follow = "SELECT *
+		     FROM Follow
+		     WHERE Username1 = \"" . $_SESSION["Username"] . 
+		     "\" AND Username2 = \"" . $_GET["name"] . "\"";
+    $check_result = $conn->query($check_follow);
+    if (($check_result->num_rows) > 0) {
+	$status = "Unfollow";
+    } else {
+	$status = "Follow";
+    }
+?>
+    <div id="followbutton"> 
+	<form action="follow.php" method="post">
+	    <?php
+		 echo "<input type=\"hidden\" name=\"followee\" value=" . $_GET["name"] . ">"; 
+		 echo "<input type=\"hidden\" name=\"action\" value=" . $status . ">"; 
+		 echo "<input type=\"submit\" value=" . $status . ">"; 
+	    ?>
+	</form>
     </div>
 
 <?php
-    echo "The user of this section is: " . $_SESSION['Username'];
-
     // get artist info
     $userName = $_GET['name'];
 
@@ -53,26 +61,26 @@
     $r1->execute();
    
     $info_result = $r1->get_result();
-    //echo "<div id=\"info\">";
+    echo "<div id=\"info\">";
     while ($row = $info_result->fetch_assoc()) {
-	echo "<p>" . $row['Name'] . "!</p>";
-	//echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
-	//$artistTitle = $row['ArtistTitle'];
+	echo "<p>Name: " . $row['Name'] . "</p>";
+	echo "<p>Email: " . $row['Email'] . "</p>";
+	echo "<p>City: " . $row['City'] . "</p>";
     }
-    //echo "</div>";
+    echo "</div>";
     $r1->close();
     
 
     //show likes
-    $likes = $conn->prepare("SELECT ArtistTitle, ArtistDescription
-			    FROM User NATURAL JOIN Likes NATURAL JOIN Artist
-			    WHERE uname = ?");
+    $likes = $conn->prepare("SELECT * 
+			    FROM Likes NATURAL JOIN Artist
+			    WHERE Username = ?");
     $likes->bind_param('s', $userName);
     $likes->execute();
     $likes_result = $likes->get_result();
-    echo "<div id=\"albums\">";
-    echo "The artist you like: ";
-    echo "<table id=\"albumtable\">";
+    echo "<div id=\"artist\">";
+    echo "The artists " . $userName . " likes: ";
+    echo "<table id=\"artisttable\">";
 
     while ($row = $likes_result->fetch_assoc()) {
 	echo "<tr>";
@@ -87,22 +95,21 @@
 
     //show follow user
     $follow= $conn->prepare("SELECT Username2  
-			     FROM User NATURAL JOIN Follow
+			     FROM Follow
 			     WHERE Username1 = ?");
     $follow->bind_param('s', $userName);
     $follow->execute();
     $follow_result = $follow->get_result();
     echo "<div id=\"follow\">";
-    echo "The user you follow:";
+    echo "The users " . $userName . " follows:";
     echo "<table id=\"followtable\">";
     while ($row = $follow_result->fetch_assoc()) {
 	echo "<tr>";
-	echo "<td><a href=\"FollowUserInfo.php?track=" . $row['Username2'] . "\">" . $row['UserName'] . "</a></td>";  //here need to change
+	echo "<td><a href=\"FollowUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  //here need to change
 	//echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
 	echo "</tr>";
     }
     echo "</table>";
-    //echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
     echo "</div>";
     $follow->close();
     $conn->close();

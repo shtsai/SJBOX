@@ -1,0 +1,55 @@
+div#title {
+    margin-left: 90px;
+}
+
+div#followbutton {
+    margin-left: 90px;
+    margin-bottom: 10px;
+}
+
+#followbutton input {
+    background-color: #f44336;
+    border: 2px solid #f44336;
+    color: white;
+    padding: 8px 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 12px;
+}
+
+#followbutton input:hover {
+    background-color: white;
+    color: black;
+
+}
+
+div#info {
+    margin-left: 90px;
+}
+
+div#artist {
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-top: 20px;
+}
+
+#artisttable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
+
+div#follow{
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-top: 50px;
+}
+
+#followtable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
