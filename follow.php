@@ -19,12 +19,15 @@
 	    $query = $conn->prepare("INSERT INTO `Follow` VALUES (?, ?, ?)");
 	    $query->bind_param('sss', $_SESSION['Username'], $_POST['followee'],  date('Y-m-d H:i:s', time()));
 	    $query->execute();
+	    $query->close();
 	} else if ($_POST['action'] == "Unfollow") {
 	    $query = $conn->prepare("DELETE FROM Follow WHERE Username1 = ? AND Username2 = ?");
 	    $query->bind_param('ss', $_SESSION['Username'], $_POST['followee']);
 	    $query->execute();
+	    $query->close();
 	}
     }
-
+    $check_followee->close();
+    $conn->close();
     header("Location: followUserInfo.php?name=" . $_POST['followee']);
 ?>
