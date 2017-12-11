@@ -84,6 +84,32 @@
     echo "</table>";
     echo "</div>";
     $follow->close();
+
+    //show playlist 
+    $playlist= $conn->prepare("SELECT *  
+			       FROM Playlist
+			       WHERE Username = ?");
+    $playlist->bind_param('s', $userName);
+    $playlist->execute();
+    $playlist_result = $playlist->get_result();
+    echo "<div id=\"playlist\">";
+    echo "Your playlists:";
+    echo "<table id=\"playlisttable\">";
+    while ($row = $playlist_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" . $row['PlaylistTitle'] . "</a></td>";  
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "Create new playlist: ";
+    echo "<div id=\"followbutton\">"; 
+    echo "<form action=\"playlist_create.php\" method=\"get\">";
+    echo "<input type=\"submit\" value=\"Create Playlist\">"; 
+    echo "</form>";
+    echo "</div>";
+    echo "</div>";
+    $playlist->close();
+
     $conn->close();
 ?>
 

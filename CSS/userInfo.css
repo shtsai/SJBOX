@@ -31,3 +31,16 @@ div#follow{
     padding: 3px;
     text-align: left;
 }
+
+div#playlist {
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-top: 20px;
+}
+
+#playlisttable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
