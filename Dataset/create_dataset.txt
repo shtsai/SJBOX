@@ -60,6 +60,17 @@ CREATE TABLE `Follow` (
         REFERENCES `User` (`Username`) 
 );
 
+CREATE TABLE `Rate` (
+    `Username` VARCHAR(15) NOT NULL,
+    `TrackId` VARCHAR(30) NOT NULL,
+    `Score` INT NOT NULL,
+    `RateTime` DATETIME NOT NULL,
+    PRIMARY KEY (`Username`, `TrackId`),
+    FOREIGN KEY (`Username`)
+        REFERENCES `User` (`Username`),
+    FOREIGN KEY (`TrackId`)
+        REFERENCES `Track` (`TrackId`)
+);
 
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('JJJ', 'Jennie', 'jennie@gmail.com', 'New York', '123456');
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('SSS', 'Sean', 'sean@gmail.com', 'New York', '666666');

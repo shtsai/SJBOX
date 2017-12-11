@@ -1,3 +1,14 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (!isset($_SESSION['Username'])) {
+	header("Location: logout.php");
+    } else if (!isset($_GET['album']) || $_GET['album'] == '') {
+	header("location: userInfo.php");
+    }
+    include('ini_db.php');
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,57 +32,44 @@
     </div>
 
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "A123456j*";
-    $dbname = "SJBOX";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
-    }
-
-    if (isset($_GET['album'])) {
-	// get artist info
-	$albumId = $_GET['album'];
-	$album_info = $conn->prepare("SELECT DISTINCT AlbumName, AlbumReleaseDate, ArtistTitle, ArtistId
-				      FROM Album NATURAL JOIN Track NATURAL JOIN Artist
-				      WHERE AlbumId = ?");
-	$album_info->bind_param('s', $albumId);
-	$album_info->execute();
-	$info_result = $album_info->get_result();
-	echo "<div id=\"info\">";
-	$row = $info_result->fetch_assoc();
-	$tmp_release = $row['AlbumReleaseDate'];
-	echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
+    // get artist info
+    $albumId = $_GET['album'];
+    $album_info = $conn->prepare("SELECT DISTINCT AlbumName, AlbumReleaseDate, ArtistTitle, ArtistId
+				  FROM Album NATURAL JOIN Track NATURAL JOIN Artist
+				  WHERE AlbumId = ?");
+    $album_info->bind_param('s', $albumId);
+    $album_info->execute();
+    $info_result = $album_info->get_result();
+    echo "<div id=\"info\">";
+    $row = $info_result->fetch_assoc();
+    $tmp_release = $row['AlbumReleaseDate'];
+    echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
+    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
+    while ($row = $info_result->fetch_assoc()) {  // might have multiple artists
 	echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
-	while ($row = $info_result->fetch_assoc()) {  // might have multiple artists
-	    echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
-	}
-	echo "<p id=\"release\">Release date: " . $tmp_release . "</p>";
-	echo "</div>";
- 	$album_info->close();
-
-	// get album tracks
-	$tracks= $conn->prepare("SELECT TrackId, TrackName
-				 FROM Track NATURAL JOIN Album
-				 WHERE AlbumId = ?");
-	$tracks->bind_param('s', $albumId);
-	$tracks->execute();
-	$tracks_result = $tracks->get_result();
-	echo "<div id=\"tracks\">";
-	echo "Here are the tracks in this album.";
-	echo "<table id=\"tracktable\">";
-	while ($row = $tracks_result->fetch_assoc()) {
-	    echo "<tr>";
-	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
-	    echo "</tr>";
-	}
-	echo "</table>";
-	echo "</div>";
- 	$albums->close();
     }
+    echo "<p id=\"release\">Release date: " . $tmp_release . "</p>";
+    echo "</div>";
+    $album_info->close();
 
+    // get album tracks
+    $tracks= $conn->prepare("SELECT TrackId, TrackName
+			     FROM Track NATURAL JOIN Album
+			     WHERE AlbumId = ?");
+    $tracks->bind_param('s', $albumId);
+    $tracks->execute();
+    $tracks_result = $tracks->get_result();
+    echo "<div id=\"tracks\">";
+    echo "Here are the tracks in this album.";
+    echo "<table id=\"tracktable\">";
+    while ($row = $tracks_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "</div>";
+    $albums->close();
     $conn->close();
 
 ?>
