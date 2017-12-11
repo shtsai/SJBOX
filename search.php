@@ -1,3 +1,12 @@
+<?php
+    // check whether the user has logged in
+    session_start();
+    if (!isset($_SESSION['Username'])) {
+	header("Location: logout.php");
+    } 
+    include('ini_db.php');
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,16 +39,6 @@
     </div>
     <div id="searchresult">
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "A123456j*";
-    $dbname = "SJBOX";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-	die("Connection failed: " . $conn->connect_error);
-    }
-    
     if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
 	$searchtype = $_GET['searchtype'];
 	$search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
