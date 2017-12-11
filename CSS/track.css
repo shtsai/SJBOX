@@ -1,5 +1,6 @@
 div#info {
-    margin-left: 150px;
+    margin-left: 90px;
+    margin-bottom: 15px;
 }
 
 p#trackname {
@@ -21,7 +22,43 @@ p#duration{
     margin: 0px;
 }
 
+div#rating {
+    margin-left: 90px;
+}
+
+#rating p {
+    margin: 0px;
+} 
+
+#rating select {
+    border: 0px ;
+    font-size: 16px;
+    height: 30px;
+    width: 50px;
+    border-radius: 10px;
+    color: #58D68D;
+}
+
+#rating input {
+    border: 1px solid #58D68D;
+    font-size: 16px;
+    height: 30px;
+    width: 50px;
+    border-radius: 10px;
+    background-color: #58D68D;
+    color: white;
+}
+
+#rating input:hover {
+    background-color: white;
+    color: #58D68D;
+}
+
+#rating input {
+    margin-left: 10px;
+}
+
 div#playwindow {
     margin-top: 20px;
-    margin-left: 150px;
+    margin-left: 90px;
 }
