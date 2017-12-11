@@ -19,12 +19,16 @@
 	    $query = $conn->prepare("INSERT INTO `Likes` VALUES (?, ?, ?)");
 	    $query->bind_param('sss', $_POST['artist'], $_SESSION['Username'], date('Y-m-d H:i:s', time()));
 	    $query->execute();
+	    $query->close();
 	} else if ($_POST['action'] == "Unlike") {
 	    $query = $conn->prepare("DELETE FROM Likes WHERE Username = ? AND ArtistId = ?");
 	    $query->bind_param('ss', $_SESSION['Username'], $_POST['artist']);
 	    $query->execute();
+	    $query->close();
 	}
     }
+    $check_followee->close();
+    $conn->close();
 
     header("Location: artist.php?artist=" . $_POST['artist']);
 ?>
