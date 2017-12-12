@@ -22,24 +22,50 @@
 
 <body>
 <?php include("includes/navigation_bar.html"); ?>
-    <div class="container">
-	<div class="row">
-	    <h1>Search Page</h1>
-	</div>
+    <div id="title">
+	<h1>Search Page</h1>
     </div>
 
-    <div class="container" id="searchbar">
+    <div id="search">
 	<form action="search.php" method="get">
-	    <input type="text" name="keyword" placeholder="Enter anything you like">
-	    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search">Go</span></button><br>
+	    <input id="searchbar" type="text" name="keyword" placeholder="Enter anything you like">
+	    <button id="searchbutton" type="submit">&#9906</button><br>
 	    <label for="option1"><input id="option1" type="radio" name="searchtype" value="TrackName" checked/>Track</label>
 	    <label for="option2"><input id="option2" type="radio" name="searchtype" value="ArtistTitle" />Artist</label>
 	    <label for="option3"><input id="option3" type="radio" name="searchtype" value="AlbumName" />Album</label>
+	    <label for="option4"><input id="option4" type="radio" name="searchtype" value="Username" />User</label>
 	</form>
     </div>
     <div id="searchresult">
 <?php
-    if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
+    if (isset($_GET['searchtype']) && $_GET['searchtype'] == "Username") {
+	$search_user= $conn->prepare("SELECT * 
+				      FROM User 
+				      WHERE Username LIKE ? 
+				      OR Name LIKE ?
+				      OR City LIKE ?");
+	$keyword = "%" . $_GET['keyword'] . "%";
+	$search_user->bind_param('sss', $keyword, $keyword, $keyword);
+	$search_user->execute();
+	$result = $search_user->get_result();
+	echo $result->num_rows . " results:";
+	echo "<table id=\"resultTable\">";
+	echo "<tr>";
+	echo "<th>Username</th>";
+	echo "<th>Name</th>";
+	echo "<th>City</th>";
+	echo "</tr>";
+	while ($row = $result->fetch_assoc()) {
+	    echo "<tr>";
+	    echo "<td><a href=\"followUserInfo.php?name=" . $row['Username'] . "\">" . $row['Username'] . "</a></td>";
+	    echo "<td>" . $row['Name'] . "</td>";
+	    echo "<td>" .$row['City'] . "</td>";
+	    echo "</tr>";
+	}	
+	echo "</table>";
+	$search_user->close();
+    
+    } else if (isset($_GET['keyword']) && $_GET['keyword'] != "") {
 	$searchtype = $_GET['searchtype'];
 	$search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
 					FROM Artist NATURAL JOIN Track NATURAL JOIN Album
@@ -48,7 +74,7 @@
 	$search_track->bind_param('s', $keyword);
 	$search_track->execute();
 	$result = $search_track->get_result();
-	echo $result->num_rows . "results:";
+	echo $result->num_rows . " results:";
 	echo "<table id=\"resultTable\">";
 	echo "<tr>";
 	echo "<th>Track Name</th>";
@@ -67,6 +93,9 @@
     
     } else {
 	echo "Welcome to SJBOX! Start by searching your favoriate songs or artists.";    
+	echo "<div id=\"post\">";
+	echo "<img src=\"images/poster.png\" alt=\"poster\">";
+	echo "</div>";
     }
 
     $conn->close();
