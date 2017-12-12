@@ -10,11 +10,13 @@ p#error {
 p#creator {
     font-size: 150%;
     margin: 0px;
+    font-style: italic;
 }
 
 p#playlistname {
     font-size: 200%;
     margin: 0px;
+    font-weight: bold;
 }
 
 p#date {
@@ -24,12 +26,42 @@ p#date {
 
 div#tracks{
     margin-left: 90px;
-    margin-top: 50px;
+    margin-right: 90px;
+    margin-top: 30px;
 }
 
-table#tracktable th, td {
-    border: 1px solid black;
+table#tracktable {
+    width: 90%;
+}
+
+#tracktable th, td {
+    border-bottom: 1px solid #ddd;
     border-collapse: collapse;
     padding: 3px;
     text-align: left;
 }
+
+#tracktable tr:hover {
+    background-color: #f5f5f5;
+}
+
+#deletebutton {
+    margin: 0px;
+}
+
+#deletebutton input {
+    background-color: #34495e;
+    border: 1px solid #34495e;
+    color: white;
+    padding: 3px 3px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 90%;
+    border-radius: 12px;
+}
+
+#deletebutton input:hover {
+    background-color: white;
+    color: black;
+}
+
