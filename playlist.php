@@ -65,7 +65,7 @@
 	echo "<table id=\"tracktable\">";
 	while ($row = $tracks_result->fetch_assoc()) {
 	    echo "<tr>";
-	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
+	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "&playlist=" . $playlistId . "\">" . $row['TrackName'] . "</a></td>";
 	    echo "</tr>";
 	}
 	echo "</table>";
