@@ -75,8 +75,15 @@
     echo "<div id=\"albums\">";
     echo $artistTitle . " has " . $albums_result->num_rows . " albums:";
     echo "<table id=\"albumtable\">";
+    echo "<tr>";
+    echo "<th style=\"width: 10%\"></th>";
+    echo "<th style=\"width: 75%\">Album Title</th>";
+    echo "<th style=\"width: 15%\">Release Date</th>";
+    echo "</tr>";
+    $index = 1;
     while ($row = $albums_result->fetch_assoc()) {
 	echo "<tr>";
+	echo "<td>" . $index++ . "</td>";
 	echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
 	echo "<td>" . $row['AlbumReleaseDate'] . "</td>";
 	echo "</tr>";
@@ -86,9 +93,12 @@
     $albums->close();
 
     // get artist tracks
-    $tracks= $conn->prepare("SELECT TrackId, TrackName, AlbumId, AlbumName  
-			     FROM Artist NATURAL JOIN Track NATURAL JOIN Album
+    $tracks= $conn->prepare("SELECT Track.TrackId, TrackName, AlbumId, AlbumName, COUNT(PlayTime) AS PlayCount
+			     FROM (Artist NATURAL JOIN Track NATURAL JOIN Album)
+			     LEFT OUTER JOIN Play ON Track.TrackId = Play.TrackId
 			     WHERE ArtistId = ?
+			     GROUP BY Track.TrackId
+			     ORDER BY PlayCount DESC
 			     LIMIT 20");
     $tracks->bind_param('s', $artistId);
     $tracks->execute();
@@ -96,16 +106,24 @@
     echo "<div id=\"tracks\">";
     echo $artistTitle . "'s Top 20 songs";
     echo "<table id=\"tracktable\">";
+    $index = 1;
+    echo "<tr>";
+    echo "<th style=\"width: 5%\"></th>";
+    echo "<th style=\"width: 55%\">Track Title</th>";
+    echo "<th style=\"width: 35%\">Album</th>";
+    echo "<th style=\"width: 5%\">Played</th>";
+    echo "</tr>";
     while ($row = $tracks_result->fetch_assoc()) {
 	echo "<tr>";
+	echo "<td>" . $index++ . "</td>";
 	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
 	echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	echo "<td>" . $row['PlayCount']  . "</td>";
 	echo "</tr>";
     }
     echo "</table>";
     echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
     echo "</div>";
-    $albums->close();
 
     $conn->close();
 
