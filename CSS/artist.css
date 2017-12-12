@@ -5,6 +5,7 @@ div#info {
 p#artistTitle {
     font-size: 200%;
     margin: 0px;
+    font-weight: bold;
 }
 
 p#description{
@@ -14,6 +15,7 @@ p#description{
 
 div#likebutton {
     margin-left: 90px;
+    margin-top: 5px;
     margin-bottom: 10px;
 }
 
@@ -21,7 +23,7 @@ div#likebutton {
     background-color: dodgerblue;
     border: 2px solid dodgerblue;
     color: white;
-    padding: 8px 8px;
+    padding: 6px 6px;
     text-align: center;
     text-decoration: none;
     font-size: 16px;
@@ -35,24 +37,42 @@ div#likebutton {
 
 div#albums {
     margin-left: 90px;
-    margin-top: 50px;
+    margin-right: 90px;
+    margin-top: 30px;
+}
+
+table#albumtable {
+    width: 90%;
 }
 
 table#albumtable th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-    padding: 3px;
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
     text-align: left;
+}
+
+table#albumtable tr:hover {
+    background-color: #f5f5f5;
 }
 
 div#tracks{
     margin-left: 90px;
+    margin-right: 90px;
     margin-top: 50px;
 }
 
+table#tracktable {
+    width: 90%;
+}
+
 table#tracktable th, td {
-    border: 1px solid black;
+    border-bottom: 1px solid #ddd;
     border-collapse: collapse;
     padding: 3px;
     text-align: left;
+    vertical-align: middle;
+}
+
+table#tracktable tr:hover {
+    background-color: #f5f5f5;
 }
