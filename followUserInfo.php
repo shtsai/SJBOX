@@ -105,7 +105,7 @@
     echo "<table id=\"followtable\">";
     while ($row = $follow_result->fetch_assoc()) {
 	echo "<tr>";
-	echo "<td><a href=\"FollowUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  //here need to change
+	echo "<td><a href=\"followUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  //here need to change
 	//echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
 	echo "</tr>";
     }
