@@ -1,0 +1,35 @@
+div#info {
+    margin-left: 90px;
+}
+
+p#error {
+    margin-left: 90px;
+    font-size: 150%;
+}
+
+p#creator {
+    font-size: 150%;
+    margin: 0px;
+}
+
+p#playlistname {
+    font-size: 200%;
+    margin: 0px;
+}
+
+p#date {
+    font-size: 100%;
+    margin: 0px;
+}
+
+div#tracks{
+    margin-left: 90px;
+    margin-top: 50px;
+}
+
+table#tracktable th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: left;
+}
