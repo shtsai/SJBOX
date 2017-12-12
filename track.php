@@ -53,7 +53,30 @@
     echo "</div>";
     
     // show rating info
-    $rating_check = $conn->prepare("SELECT * FROM Rate WHERE Username = ? AND TrackId = ? ORDER BY RateTime");
+    echo "<div id=\"rating\">";
+    echo "<p>Average Rating: </p>";
+    $avg_rating = $conn->prepare("SELECT AVG(Score) AS avgScore
+				  FROM Rate 
+				  WHERE TrackId = ?
+				  GROUP BY TrackId");
+    $avg_rating->bind_param('s', $trackId);
+    $avg_rating->execute();
+    $avg_result = $avg_rating->get_result();
+    $avgScore = 0;
+    while ($row = $avg_result->fetch_assoc()) {
+	$avgScore = $row['avgScore'];
+    }
+    for ($i = 0; $i < $avgScore; $i++) {
+	echo "&#9733";
+    }
+    for ($i = $avgScore; $i < 10; $i++) {
+	echo "&#9734";
+    }
+    $rating_check = $conn->prepare("SELECT * 
+				    FROM Rate 
+				    WHERE Username = ? 
+				    AND TrackId = ? 
+				    ORDER BY RateTime");
     $rating_check->bind_param('ss', $_SESSION['Username'], $trackId);
     $rating_check->execute();
     $rating_result = $rating_check->get_result();
@@ -63,18 +86,10 @@
     } 
     $search_track->close();
 
-    echo "<div id=\"rating\">";
-    echo "<p>Rating: </p>";
     if ($score == 0) {
 	echo "<p>You haven't rated this track.</p>";
     } else {
 	echo "<p>Your rating for this track is " . $score . "</p>";
-    }
-    for ($i = 0; $i < $score; $i++) {
-	echo "&#9733";
-    }
-    for ($i = $score; $i < 10; $i++) {
-	echo "&#9734";
     }
     echo "<form action=\"rate.php\" method=\"post\">";
     echo "<input type=\"hidden\" name=\"track\" value=" . $trackId  . ">";
@@ -101,43 +116,44 @@
     echo "</div>";
 
     // show add to playlist
-    echo "<div id=\"playlist\">";
-    echo "Add to your playlists:";
-    
     $playlist = $conn->prepare("SELECT *
 			        FROM Playlist
 			        WHERE Username = ?");
     $playlist->bind_param('s', $_SESSION['Username']);
     $playlist->execute();
     $playlist_result = $playlist->get_result();
-    echo "<table>";
-    while ($row = $playlist_result->fetch_assoc()) {
-	$check_exist = $conn->prepare("SELECT * 
-	                               FROM PlaylistSong 
-				       WHERE PlaylistId = ? AND TrackId = ?");
-	$check_exist->bind_param('ss', $row['PlaylistId'], $trackId);
-	$check_exist->execute();
-	$check_result = $check_exist->get_result();
-	if ($check_result->num_rows > 0) {
-	    $status = "Remove";
-	    $sign = "&#10004";
-	} else {
-	    $status = "Add";
-	    $sign = "+";
+    if ($playlist_result->num_rows > 0) {
+	echo "<div id=\"playlist\">";
+	echo "Add to your playlists:";
+	echo "<table>";
+	while ($row = $playlist_result->fetch_assoc()) {
+	    $check_exist = $conn->prepare("SELECT * 
+					   FROM PlaylistSong 
+					   WHERE PlaylistId = ? AND TrackId = ?");
+	    $check_exist->bind_param('ss', $row['PlaylistId'], $trackId);
+	    $check_exist->execute();
+	    $check_result = $check_exist->get_result();
+	    if ($check_result->num_rows > 0) {
+		$status = "Remove";
+		$sign = "&#10004";
+	    } else {
+		$status = "Add";
+		$sign = "+";
+	    }
+	    echo "<tr>";
+	    echo "<td><form action=\"playlist_add.php\" method=\"post\">";  
+	    echo "<input type=\"hidden\" name=\"playlist\" value=\"". $row['PlaylistId'] . "\">";
+	    echo "<input type=\"hidden\" name=\"track\" value=\"". $trackId . "\">";
+	    echo "<input type=\"hidden\" name=\"action\" value=\"". $status . "\">";
+	    echo "<input type=\"submit\" value=\"" . $sign . "\">";
+	    echo "</form></td>";
+	    echo "<td ><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" .$row['PlaylistTitle'] . "</a>";
+	    echo "</tr>";
+	    $check_exist->close();
 	}
-	echo "<tr>";
-	echo "<td><form action=\"playlist_add.php\" method=\"post\">";  
-	echo "<input type=\"hidden\" name=\"playlist\" value=\"". $row['PlaylistId'] . "\">";
-	echo "<input type=\"hidden\" name=\"track\" value=\"". $trackId . "\">";
-	echo "<input type=\"hidden\" name=\"action\" value=\"". $status . "\">";
-	echo "<input type=\"submit\" value=\"" . $sign . "\">";
-	echo "</form></td>";
-	echo "<td ><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" .$row['PlaylistTitle'] . "</a>";
-	echo "</tr>";
-	$check_exist->close();
+	echo "</table>";
+	echo "</div>";
     }
-    echo "</table>";
-    echo "</div>";
     $playlist->close();
 
     // add play record
