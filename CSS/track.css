@@ -61,4 +61,34 @@ div#rating {
 div#playwindow {
     margin-top: 20px;
     margin-left: 90px;
+    margin-bottom: 0px;
 }
+
+div#playlist {
+    margin-left: 90px;
+    margin-bottom: 15px;
+}
+
+table#playlist {
+}
+
+#playlist th, td {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+#playlist input {
+    border: 1px solid SlateBlue;
+    font-size: 16px;
+    height: 30px;
+    width: 50px;
+    border-radius: 10px;
+    background-color: SlateBlue;
+    color: white;
+}
+
+#playlist input:hover {
+    background-color: white;
+    color: SlateBlue;
+}
+

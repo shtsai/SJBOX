@@ -61,6 +61,8 @@
     while ($row = $rating_result->fetch_assoc()) {
 	$score = $row['Score'];
     } 
+    $search_track->close();
+
     echo "<div id=\"rating\">";
     echo "<p>Rating: </p>";
     if ($score == 0) {
@@ -98,7 +100,46 @@
 	    . "\" frameborder=\"0\" width=\"720\" width=\"640\" allowtransparency=\"true\"></iframe>";
     echo "</div>";
 
-    $search_track->close();
+    // show add to playlist
+    echo "<div id=\"playlist\">";
+    echo "Add to your playlists:";
+    
+    $playlist = $conn->prepare("SELECT *
+			        FROM Playlist
+			        WHERE Username = ?");
+    $playlist->bind_param('s', $_SESSION['Username']);
+    $playlist->execute();
+    $playlist_result = $playlist->get_result();
+    echo "<table>";
+    while ($row = $playlist_result->fetch_assoc()) {
+	$check_exist = $conn->prepare("SELECT * 
+	                               FROM PlaylistSong 
+				       WHERE PlaylistId = ? AND TrackId = ?");
+	$check_exist->bind_param('ss', $row['PlaylistId'], $trackId);
+	$check_exist->execute();
+	$check_result = $check_exist->get_result();
+	if ($check_result->num_rows > 0) {
+	    $status = "Remove";
+	    $sign = "&#10004";
+	} else {
+	    $status = "Add";
+	    $sign = "+";
+	}
+	echo "<tr>";
+	echo "<td><form action=\"playlist_add.php\" method=\"post\">";  
+	echo "<input type=\"hidden\" name=\"playlist\" value=\"". $row['PlaylistId'] . "\">";
+	echo "<input type=\"hidden\" name=\"track\" value=\"". $trackId . "\">";
+	echo "<input type=\"hidden\" name=\"action\" value=\"". $status . "\">";
+	echo "<input type=\"submit\" value=\"" . $sign . "\">";
+	echo "</form></td>";
+	echo "<td ><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" .$row['PlaylistTitle'] . "</a>";
+	echo "</tr>";
+	$check_exist->close();
+    }
+    echo "</table>";
+    echo "</div>";
+    $playlist->close();
+
     $conn->close();
 
 ?>
