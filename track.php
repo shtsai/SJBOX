@@ -140,8 +140,25 @@
     echo "</div>";
     $playlist->close();
 
+    // add play record
+    $check_playlist = $conn->prepare("SELECT * 
+				      FROM Playlist
+				      WHERE PlaylistId = ?");
+    $check_playlist->bind_param('s', $_GET['playlist']);
+    $check_playlist->execute();
+    $check_playlist_result = $check_playlist->get_result();
+    if ($check_playlist_result->num_rows > 0) {  // valid playlist
+	$playlistId = $_GET['playlist'];
+    } else {
+	$playlistId = NULL;
+    } 
+    $currenttime = date('Y-m-d H:i:s', time());
+    $add_play = $conn->prepare("INSERT INTO Play VALUES (?, ?, ?, ?)");
+    $add_play->bind_param('ssss', $_SESSION['Username'], $trackId, $currenttime,$playlistId);
+    $add_play->execute();
+    $add_play->close();
+    $check_playlist->close();
     $conn->close();
-
 ?>
 
 
