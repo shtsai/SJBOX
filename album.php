@@ -62,14 +62,16 @@
     echo "<div id=\"tracks\">";
     echo "Here are the tracks in this album.";
     echo "<table id=\"tracktable\">";
+    $index = 1;
     while ($row = $tracks_result->fetch_assoc()) {
 	echo "<tr>";
+	echo "<td>" . $index . "</td>";
 	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" . $row['TrackName'] . "</a></td>";
 	echo "</tr>";
+	$index++;
     }
     echo "</table>";
     echo "</div>";
-    $albums->close();
     $conn->close();
 
 ?>
