@@ -25,10 +25,8 @@
 <body>
 <?php include("./includes/navigation_bar.html"); ?>
 
-    <div class="container">
-	<div class="row">
-	    <h1>Playlist Page</h1>
-	</div>
+    <div id="title">
+	<h1>Playlist Page</h1>
     </div>
 
 <?php

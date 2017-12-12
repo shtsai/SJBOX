@@ -27,7 +27,6 @@
 
     <div class="container">
 	<div class="row">
-	    <h1>Album Page</h1>
 	</div>
     </div>
 
@@ -41,6 +40,7 @@
     $album_info->execute();
     $info_result = $album_info->get_result();
     echo "<div id=\"info\">";
+    echo "<h1>Album Page</h1>";
     $row = $info_result->fetch_assoc();
     $tmp_release = $row['AlbumReleaseDate'];
     echo "<p id=\"albumname\"><a href=\"album.php?album=" . $albumId . "\">" .$row['AlbumName'] . "</a></p>";
