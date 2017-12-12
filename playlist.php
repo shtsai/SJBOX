@@ -41,6 +41,7 @@
     $playlist_info->execute();
     $info_result = $playlist_info->get_result();
     $row = $info_result->fetch_assoc();
+    $owner = $row['Username'];
     if ($info_result->num_rows == 0) {
 	echo "<p id=\"error\">This playlist doesn't exist.</p>";
     } else if ($row['PlaylistStatus'] == "private" && $row['Username'] != $_SESSION['Username']) {
@@ -55,7 +56,7 @@
 
 	// get playlist tracks
 	$tracks= $conn->prepare("SELECT *
-				 FROM Playlist NATURAL JOIN PlaylistSong NATURAL JOIN Track
+				 FROM Playlist NATURAL JOIN PlaylistSong NATURAL JOIN Track NATURAL JOIN Artist
 				 WHERE PlaylistId = ?");
 	$tracks->bind_param('s', $playlistId);
 	$tracks->execute();
@@ -63,9 +64,27 @@
 	echo "<div id=\"tracks\">";
 	echo "Here are the tracks in this playlist.";
 	echo "<table id=\"tracktable\">";
+	echo "<tr>";
+	echo "<th style=\"width: 10%\"></th>";
+	echo "<th style=\"width: 60%\">Track Name</th>";
+	echo "<th style=\"width: 20%\">Artist</th>";
+	echo "<th style=\"width: 10%\"></th>";
+	echo "</tr>";
+	$index = 1;
 	while ($row = $tracks_result->fetch_assoc()) {
 	    echo "<tr>";
+	    echo "<td>" . $index++ . "</td>";
 	    echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "&playlist=" . $playlistId . "\">" . $row['TrackName'] . "</a></td>";
+	    echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" . $row['ArtistTitle'] . "</a></td>";
+	    if ($owner == $_SESSION['Username']) {
+		echo "<td>";
+		echo "<form id=\"deletebutton\" action=\"playlist_delete.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"playlist\" value=\"" . $playlistId  . "\">";
+		echo "<input type=\"hidden\" name=\"track\" value=\"" . $row['TrackId'] . "\">";
+		echo "<input type=\"submit\" value=\"Delete\">";
+		echo "</form>";
+		echo "</td>";
+	    }
 	    echo "</tr>";
 	}
 	echo "</table>";
