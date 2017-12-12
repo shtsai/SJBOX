@@ -3,9 +3,7 @@
     session_start();
     if (!isset($_SESSION['Username'])) {
 	header("Location: logout.php");
-    } else if (!isset($_GET['name']) || $_GET['name'] == '') {
-	header("location: userInfo.php");
-    }
+    } 
     include('ini_db.php');
 ?>
 
@@ -23,38 +21,41 @@
 </head>
 
 <body>
-<?php include("./includes/navigation_bar.html"); ?>
+<?php 
+    include("./includes/navigation_bar.html"); 
 
-    <div id="title">
-	<?php echo "<h1>" . $_GET['name'] . "'s Page</h1>"; ?>
-    </div>
-<?php
-    // check whether following or not
-    $check_follow = "SELECT *
-		     FROM Follow
-		     WHERE Username1 = \"" . $_SESSION["Username"] . 
-		     "\" AND Username2 = \"" . $_GET["name"] . "\"";
-    $check_result = $conn->query($check_follow);
-    if (($check_result->num_rows) > 0) {
-	$status = "Unfollow";
+    if (!isset($_GET['name']) || $_GET['name'] == "" || $_GET['name'] == $_SESSION['Username']) {
+	$userName = $_SESSION['Username'];
+	echo "<div id=\"title\">";
+	echo "<h1>" . $userName . "'s Page</h1>";
+	echo "</div><br><br><br>";
+	
     } else {
-	$status = "Follow";
+	$userName = $_GET['name']; 
+
+	// check whether following or not
+	$check_follow = "SELECT *
+			 FROM Follow
+			 WHERE Username1 = \"" . $_SESSION["Username"] . 
+			 "\" AND Username2 = \"" . $_GET["name"] . "\"";
+	$check_result = $conn->query($check_follow);
+	if (($check_result->num_rows) > 0) {
+	    $status = "Unfollow";
+	} else {
+	    $status = "Follow";
+	}
+	echo "<div id=\"title\">";
+	echo "<h1>" . $userName . "'s Page</h1>";
+	echo "<div id=\"followbutton\">"; 
+	echo "<form action=\"follow.php\" method=\"post\">";
+	echo "<input type=\"hidden\" name=\"followee\" value=" . $_GET["name"] . ">"; 
+	echo "<input type=\"hidden\" name=\"action\" value=" . $status . ">"; 
+	echo "<input type=\"submit\" value=" . $status . ">"; 
+	echo "</form>";
+	echo "</div>";
+	echo "</div><br>";
+
     }
-?>
-    <div id="followbutton"> 
-	<form action="follow.php" method="post">
-	    <?php
-		 echo "<input type=\"hidden\" name=\"followee\" value=" . $_GET["name"] . ">"; 
-		 echo "<input type=\"hidden\" name=\"action\" value=" . $status . ">"; 
-		 echo "<input type=\"submit\" value=" . $status . ">"; 
-	    ?>
-	</form>
-    </div>
-
-<?php
-    // get artist info
-    $userName = $_GET['name'];
-
     //show user info 
     $r1 = $conn->prepare("SELECT * FROM User WHERE Username = ?");
     $r1->bind_param('s', $userName);
@@ -81,6 +82,10 @@
     echo "<div id=\"artist\">";
     echo "The artists " . $userName . " likes: ";
     echo "<table id=\"artisttable\">";
+    echo "<tr>";
+    echo "<th style=\"width: 25%\">Artist</th>";
+    echo "<th style=\"width: 75%\">Description</th>";
+    echo "</tr>";
 
     while ($row = $likes_result->fetch_assoc()) {
 	echo "<tr>";

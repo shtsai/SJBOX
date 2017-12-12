@@ -1,5 +1,11 @@
 div#title {
     margin-left: 90px;
+    display: block;
+}
+
+#title h1 {
+    float: left;
+    margin-right: 15px;
 }
 
 div#followbutton {
@@ -27,18 +33,31 @@ div#info {
     margin-left: 90px;
 }
 
+#info p {
+    margin: 0px;
+    font: 100%;
+}
+
 div#artist {
     margin-left: 90px;
     margin-right: 90px;
     margin-top: 20px;
 }
 
+table#artisttable {
+    width: 90%;
+}
+
 #artisttable th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
+    border-bottom: 1px solid #ddd;
     padding: 3px;
     text-align: left;
 }
+
+table#artisttable tr:hover {
+    background-color: #f5f5f5;
+}
+
 
 div#follow{
     margin-left: 90px;
@@ -47,8 +66,13 @@ div#follow{
 }
 
 #followtable th, td {
-    border: 1px solid black;
+    border-bottom: 1px solid #ddd;
     border-collapse: collapse;
     padding: 3px;
     text-align: left;
 }
+
+table#followtable tr:hover {
+    background-color: #f5f5f5;
+}
+
