@@ -2,6 +2,10 @@ div#info {
     margin-left: 90px;
 }
 
+div#title {
+    margin-left: 90px;
+}
+
 p#error {
     margin-left: 90px;
     font-size: 150%;
