@@ -175,6 +175,8 @@
     $add_play->close();
     $check_playlist->close();
     $conn->close();
+
+    include("./includes/footer.html");
 ?>
 
 

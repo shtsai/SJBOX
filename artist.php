@@ -127,6 +127,7 @@
 
     $conn->close();
 
+    include("./includes/footer.html");
 ?>
 
 

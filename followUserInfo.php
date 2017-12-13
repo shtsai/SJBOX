@@ -144,6 +144,8 @@
     $playlist->close();
 
     $conn->close();
+
+    include("./includes/footer.html");
 ?>
 
 

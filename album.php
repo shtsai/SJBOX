@@ -23,14 +23,9 @@
 </head>
 
 <body>
-<?php include("./includes/navigation_bar.html"); ?>
+<?php 
+    include("./includes/navigation_bar.html");
 
-    <div class="container">
-	<div class="row">
-	</div>
-    </div>
-
-<?php
     // get artist info
     $albumId = $_GET['album'];
     $album_info = $conn->prepare("SELECT DISTINCT AlbumName, AlbumReleaseDate, ArtistTitle, ArtistId
@@ -74,6 +69,7 @@
     echo "</div>";
     $conn->close();
 
+    include("./includes/footer.html");
 ?>
 
 
