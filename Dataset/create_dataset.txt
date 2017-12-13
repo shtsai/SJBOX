@@ -72,6 +72,42 @@ CREATE TABLE `Rate` (
         REFERENCES `Track` (`TrackId`)
 );
 
+CREATE TABLE `Playlist` (
+    `PlaylistId` INT NOT NULL AUTO_INCREMENT,
+    `Username` VARCHAR(15) NOT NULL,
+    `PlaylistTitle` VARCHAR(45) NOT NULL,
+    `PlaylistDate` DATETIME NOT NULL,
+    `PlaylistStatus` VARCHAR(20) NULL,
+    PRIMARY KEY (`PlaylistId`),
+    FOREIGN KEY (`Username`)
+        REFERENCES `User` (`Username`) 
+);
+
+CREATE TABLE `PlaylistSong` (
+    `PlaylistId` INT NOT NULL,
+    `TrackId` VARCHAR(30) NOT NULL,
+    PRIMARY KEY (`PlaylistId`, `TrackId`),
+    FOREIGN KEY (`PlaylistId`)
+        REFERENCES `Playlist` (`PlaylistId`),
+    FOREIGN KEY (`TrackId`)
+        REFERENCES `Track` (`TrackId`)
+);
+
+CREATE TABLE `Play` (
+    `Username` VARCHAR(15) NOT NULL,
+    `TrackId` VARCHAR(30) NOT NULL,
+    `PlayTime` DATETIME NOT NULL,
+    `PlaylistId` INT NULL,
+    PRIMARY KEY (`Username`, `TrackId`, `PlayTime`),
+    FOREIGN KEY (`Username`)
+        REFERENCES `User` (`Username`),
+    FOREIGN KEY (`TrackId`)
+        REFERENCES `Track` (`TrackId`),
+    FOREIGN KEY (`PlaylistId`)
+        REFERENCES `Playlist` (`PlaylistId`)
+);
+
+
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('JJJ', 'Jennie', 'jennie@gmail.com', 'New York', '123456');
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('SSS', 'Sean', 'sean@gmail.com', 'New York', '666666');
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('NancyInQueens', 'Nancy', 'nancy@gmail.com', 'New York', '222222');
