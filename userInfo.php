@@ -18,97 +18,121 @@
     <link rel="stylesheet" href="./CSS/userInfo.css"> 
 </head>
 <body>
-<?php include("./includes/navigation_bar.html"); ?>
+<?php 
+    include("./includes/navigation_bar.html");
 
-    <div id="title">
-	<?php echo "<h1>Hello! " . $_SESSION['Username'] . "</h1>"; ?>
-    </div>
-
-<?php
-    // get userName from session
     $userName = $_SESSION['Username'];
-
-    //show user info 
-    $r1 = $conn->prepare("SELECT * FROM User WHERE Username = ?");
-    $r1->bind_param('s', $userName);
-    $r1->execute();
-   
-    $info_result = $r1->get_result();
-    echo "<div id=\"info\">";
-    while ($row = $info_result->fetch_assoc()) {
-	echo "<p>Username: " . $row['Username'] . "</p>";
-	echo "<p>Name: " . $row['Name'] . "</p>";
-	echo "<p>Email: " . $row['Email'] . "</p>";
-	echo "<p>City: " . $row['City'] . "</p>";
-    }
+    echo "<div id=\"title\">";
+    echo "<h1>Hey " . $userName . "!</h1>";
+    echo "Here is the feed we created specially for you!";
     echo "</div>";
-    $r1->close();
-
     
-    //show likes
-    $likes = $conn->prepare("SELECT ArtistId, ArtistTitle, ArtistDescription
-			    FROM User NATURAL JOIN Likes NATURAL JOIN Artist
-			    WHERE Username = ?");
+    //show new tracks by artists they like
+    $likes = $conn->prepare("SELECT ArtistId, ArtistTitle, Track.TrackName, Track.TrackId 
+			    FROM User NATURAL JOIN Likes NATURAL JOIN Artist NATURAL JOIN Track 
+			    LEFT OUTER JOIN Play ON Play.Username = User.Username AND Play.TrackId = Track.TrackId
+			    WHERE User.Username = ?
+			    GROUP BY Track.TrackId
+			    HAVING COUNT(PlayTime) = 0
+			    LIMIT 10");
     $likes->bind_param("s", $userName);
     $likes->execute();
     $likes_result = $likes->get_result();
     echo "<div id=\"artist\">";
-    echo "The artists you like: ";
+    echo "<h4>New Tracks by Artists You Like:</h4>";
     echo "<table id=\"artisttable\">";
-
+    echo "<tr>";
+    echo "<th style=\"width: 30%\">Artist</th>";
+    echo "<th style=\"width: 70%\">Track Name</th>";
+    echo "</tr>";
     while ($row = $likes_result->fetch_assoc()) {
 	echo "<tr>";
 	echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
-	echo "<td>" . $row['ArtistDescription'] . "</td>"; 
+	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" .$row['TrackName'] . "</a></td>";
 	echo "</tr>";
     }
     echo "</table>";
     echo "</div>";
     $likes->close();
 
-    //show follow user
-    $follow= $conn->prepare("SELECT Username2  
-			     FROM User, Follow
-			     WHERE Username1 = ? AND Username = Follow.Username1");
+    // show playlist created by people you follow
+    $follow= $conn->prepare("SELECT Username2, PlaylistTitle, P.PlaylistId, COUNT(PlayTime) AS playCount
+			     FROM Follow F JOIN Playlist P ON Username2 = P.Username
+			     LEFT OUTER JOIN Play ON P.PlaylistId = Play.PlaylistId
+			     WHERE F.Username1 = ?
+    			     GROUP BY P.PlaylistId
+			     ORDER BY playCount DESC");
     $follow->bind_param('s', $userName);
     $follow->execute();
     $follow_result = $follow->get_result();
     echo "<div id=\"follow\">";
-    echo "The user you follow:";
+    echo "<h4>New Playlist Created by Users You Follow:</h4>";
     echo "<table id=\"followtable\">";
+    echo "<tr>";
+    echo "<th style=\"width: 30%\">Username</th>";
+    echo "<th style=\"width: 60%\">Playlist Name</th>";
+    echo "<th style=\"width: 10%\">Played</th>";
+    echo "</tr>";
     while ($row = $follow_result->fetch_assoc()) {
 	echo "<tr>";
 	echo "<td><a href=\"followUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  
+	echo "<td><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" . $row['PlaylistTitle'] . "</a></td>";  
+	echo "<td>" . $row['playCount'] . "</td>";
 	echo "</tr>";
     }
     echo "</table>";
     echo "</div>";
     $follow->close();
 
-    //show playlist 
-    $playlist= $conn->prepare("SELECT *  
-			       FROM Playlist
-			       WHERE Username = ?");
-    $playlist->bind_param('s', $userName);
-    $playlist->execute();
-    $playlist_result = $playlist->get_result();
-    echo "<div id=\"playlist\">";
-    echo "Your playlists:";
-    echo "<table id=\"playlisttable\">";
-    while ($row = $playlist_result->fetch_assoc()) {
+    //show top 10 by rating 
+    $rate = "SELECT ArtistId, ArtistTitle, Track.TrackName, Track.TrackId, AVG(Score) AS avgScore
+	     FROM Rate NATURAL JOIN Track NATURAL JOIN Artist
+	     GROUP BY TrackId
+	     ORDER BY avgScore DESC
+	     LIMIT 10";
+    $rate_result = $conn->query($rate);
+    echo "<div id=\"highestrate\">";
+    echo "<h4>Top 10 Tracks by User Ratings:</h4>";
+    echo "<table id=\"ratetable\">";
+    echo "<tr>";
+    echo "<th style=\"width: 30%\">Artist</th>";
+    echo "<th style=\"width: 60%\">Track Name</th>";
+    echo "<th style=\"width: 10%\">Score</th>";
+    echo "</tr>";
+    while ($row = $rate_result->fetch_assoc()) {
 	echo "<tr>";
-	echo "<td><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" . $row['PlaylistTitle'] . "</a></td>";  
+	echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
+	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" .$row['TrackName'] . "</a></td>";
+	echo "<td>" . $row['avgScore'] . "</td>";
 	echo "</tr>";
     }
     echo "</table>";
-    echo "Create new playlist: ";
-    echo "<div id=\"followbutton\">"; 
-    echo "<form action=\"playlist_create.php\" method=\"get\">";
-    echo "<input type=\"submit\" value=\"Create Playlist\">"; 
-    echo "</form>";
     echo "</div>";
+
+    // Top 10 most played tracks
+    $play= "SELECT ArtistId, ArtistTitle, Track.TrackName, Track.TrackId, COUNT(PlayTime) AS playCount 
+	     FROM Play NATURAL JOIN Track NATURAL JOIN Artist
+	     GROUP BY TrackId
+	     ORDER BY playCount DESC
+	     LIMIT 10";
+    $play_result = $conn->query($play);
+    echo "<div id=\"mostplayed\">";
+    echo "<h4>Top 10 Most Played Tracks:</h4>";
+    echo "<table id=\"playtable\">";
+    echo "<tr>";
+    echo "<th style=\"width: 30%\">Artist</th>";
+    echo "<th style=\"width: 60%\">Track Name</th>";
+    echo "<th style=\"width: 10%\">Played</th>";
+    echo "</tr>";
+    while ($row = $play_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></td>";
+	echo "<td><a href=\"track.php?track=" . $row['TrackId'] . "\">" .$row['TrackName'] . "</a></td>";
+	echo "<td>" . $row['playCount'] . "</td>";
+	echo "</tr>";
+    }
+    echo "</table>";
     echo "</div>";
-    $playlist->close();
 
     $conn->close();
 ?>

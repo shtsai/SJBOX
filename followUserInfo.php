@@ -80,7 +80,7 @@
     $likes->execute();
     $likes_result = $likes->get_result();
     echo "<div id=\"artist\">";
-    echo "The artists " . $userName . " likes: ";
+    echo "<h4>The artists " . $userName . " likes: </h4>";
     echo "<table id=\"artisttable\">";
     echo "<tr>";
     echo "<th style=\"width: 25%\">Artist</th>";
@@ -106,19 +106,44 @@
     $follow->execute();
     $follow_result = $follow->get_result();
     echo "<div id=\"follow\">";
-    echo "The users " . $userName . " follows:";
+    echo "<h4>The users " . $userName . " follows:</h4>";
     echo "<table id=\"followtable\">";
     while ($row = $follow_result->fetch_assoc()) {
 	echo "<tr>";
-	echo "<td><a href=\"followUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  //here need to change
-	//echo "<td><a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></td>";
+	echo "<td><a href=\"followUserInfo.php?name=" . $row['Username2'] . "\">" . $row['Username2'] . "</a></td>";  
 	echo "</tr>";
     }
     echo "</table>";
     echo "</div>";
     $follow->close();
-    $conn->close();
 
+    //show playlist 
+    $playlist= $conn->prepare("SELECT *  
+			       FROM Playlist
+			       WHERE Username = ?");
+    $playlist->bind_param('s', $userName);
+    $playlist->execute();
+    $playlist_result = $playlist->get_result();
+    echo "<div id=\"playlist\">";
+    echo "<h4>Your playlists:</h4>";
+    if ($userName == $_SESSION['Username']) {
+	echo "<div id=\"followbutton\">"; 
+	echo "<form action=\"playlist_create.php\" method=\"get\">";
+	echo "<input type=\"submit\" value=\"Create Playlist\">"; 
+	echo "</form>";
+	echo "</div>";
+    }
+    echo "<table id=\"playlisttable\">";
+    while ($row = $playlist_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"playlist.php?playlist=" . $row['PlaylistId'] . "\">" . $row['PlaylistTitle'] . "</a></td>";  
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "</div>";
+    $playlist->close();
+
+    $conn->close();
 ?>
 
 
