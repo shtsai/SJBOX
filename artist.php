@@ -73,7 +73,7 @@
     $albums->execute();
     $albums_result = $albums->get_result();
     echo "<div id=\"albums\">";
-    echo $artistTitle . " has " . $albums_result->num_rows . " albums:";
+    echo "<h4>" . $artistTitle . " has " . $albums_result->num_rows . " albums:</h4>";
     echo "<table id=\"albumtable\">";
     echo "<tr>";
     echo "<th style=\"width: 10%\"></th>";
@@ -104,7 +104,7 @@
     $tracks->execute();
     $tracks_result = $tracks->get_result();
     echo "<div id=\"tracks\">";
-    echo $artistTitle . "'s Top 20 songs";
+    echo "<h4>" . $artistTitle . "'s Top 20 songs</h4>";
     echo "<table id=\"tracktable\">";
     $index = 1;
     echo "<tr>";
@@ -124,6 +124,30 @@
     echo "</table>";
     echo "<p><a href=\"search.php?keyword=" . $artistTitle . "&searchtype=ArtistTitle\">See full list</a><p>";
     echo "</div>";
+    $tracks->close();
+
+    // get similar artist 
+    $similar = $conn->prepare("SELECT L1.ArtistId AS aid, L2.ArtistId, Artist.ArtistTitle atitle
+			       FROM Likes L1 JOIN Likes L2 ON L1.Username = L2.Username 
+			       JOIN Artist ON L1.ArtistId = Artist.ArtistId
+			       WHERE L2.ArtistId = ?
+			       GROUP BY L1.ArtistId, L2.ArtistId
+			       HAVING COUNT(*) >= 3
+			       AND L1.ArtistId > L2.ArtistId");
+    $similar->bind_param('s', $artistId);
+    $similar->execute();
+    $similar_result = $similar->get_result();
+    echo "<div id=\"tracks\">";
+    echo "<h4>Similar Artists:</h4>";
+    echo "<table id=\"tracktable\">";
+    while ($row = $similar_result->fetch_assoc()) {
+	echo "<tr>";
+	echo "<td><a href=\"artist.php?artist=" . $row['aid'] . "\">" . $row['atitle'] . "</a></td>";
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "</div>";
+    $similar->close();
 
     $conn->close();
 
