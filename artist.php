@@ -122,7 +122,7 @@
 	echo "</tr>";
     }
     echo "</table>";
-    echo "<p><a href=\"search.php?keyword=" . $artistTitle . "\">See full list</a><p>";
+    echo "<p><a href=\"search.php?keyword=" . $artistTitle . "&searchtype=ArtistTitle\">See full list</a><p>";
     echo "</div>";
 
     $conn->close();
