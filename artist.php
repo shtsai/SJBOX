@@ -133,7 +133,7 @@
 			       WHERE L2.ArtistId = ?
 			       GROUP BY L1.ArtistId, L2.ArtistId
 			       HAVING COUNT(*) >= 3
-			       AND L1.ArtistId > L2.ArtistId");
+			       AND L1.ArtistId != L2.ArtistId");
     $similar->bind_param('s', $artistId);
     $similar->execute();
     $similar_result = $similar->get_result();
