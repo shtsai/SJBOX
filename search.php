@@ -100,6 +100,7 @@
 
     $conn->close();
 
+    include("./includes/footer.html");
 ?>
     </div>
 

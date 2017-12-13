@@ -135,6 +135,7 @@
     echo "</div>";
 
     $conn->close();
+    include("./includes/footer.html");
 ?>
 
 

@@ -93,6 +93,7 @@
     $playlist_info->close();
     $conn->close();
 
+    include("./includes/footer.html");
 ?>
 
 
