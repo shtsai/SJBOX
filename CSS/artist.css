@@ -2,6 +2,10 @@ div#info {
     margin-left: 90px;
 }
 
+#info h1 {
+    font-weight: bold;
+}
+
 p#artistTitle {
     font-size: 200%;
     margin: 0px;
@@ -11,6 +15,7 @@ p#artistTitle {
 p#description{
     font-size: 100%;
     margin: 0px;
+    font-style: italic;
 }
 
 div#likebutton {
