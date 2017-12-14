@@ -40,9 +40,8 @@
     $search_track->execute();
     $result = $search_track->get_result();
     echo "<div id=\"info\">";
-    echo "<h1>Track Page</h1>";
     while ($row = $result->fetch_assoc()) {
-	echo "<p id=\"trackname\">" . $row['TrackName'] . "</p>";
+	echo "<h1>" . $row['TrackName'] . "</h1>";
 	echo "<p id=\"artistTitle\">Artist: <a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
 	echo "<p id=\"albumname\">Album: <a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></p>";
 	$seconds = $row['TrackDuration'] / 1000;
@@ -135,7 +134,7 @@
 	    $check_result = $check_exist->get_result();
 	    if ($check_result->num_rows > 0) {
 		$status = "Remove";
-		$sign = "&#10004";
+		$sign = "&#10005";
 	    } else {
 		$status = "Add";
 		$sign = "+";

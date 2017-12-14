@@ -73,7 +73,7 @@ CREATE TABLE `Rate` (
 );
 
 CREATE TABLE `Playlist` (
-    `PlaylistId` INT NOT NULL AUTO_INCREMENT,
+    `PlaylistId` VARCHAR(30) NOT NULL,
     `Username` VARCHAR(15) NOT NULL,
     `PlaylistTitle` VARCHAR(45) NOT NULL,
     `PlaylistDate` DATETIME NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `Playlist` (
 );
 
 CREATE TABLE `PlaylistSong` (
-    `PlaylistId` INT NOT NULL,
+    `PlaylistId` VARCHAR(30) NOT NULL,
     `TrackId` VARCHAR(30) NOT NULL,
     PRIMARY KEY (`PlaylistId`, `TrackId`),
     FOREIGN KEY (`PlaylistId`)
@@ -97,7 +97,7 @@ CREATE TABLE `Play` (
     `Username` VARCHAR(15) NOT NULL,
     `TrackId` VARCHAR(30) NOT NULL,
     `PlayTime` DATETIME NOT NULL,
-    `PlaylistId` INT NULL,
+    `PlaylistId` VARCHAR(30) NULL,
     PRIMARY KEY (`Username`, `TrackId`, `PlayTime`),
     FOREIGN KEY (`Username`)
         REFERENCES `User` (`Username`),
