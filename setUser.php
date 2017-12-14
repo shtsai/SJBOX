@@ -19,11 +19,11 @@ if ($conn->connect_error) {
 //echo "Connected successfully";
 
 //print_r($_POST);
-$u_name = $_POST["uname"];
-$name = $_POST["name"];
-$password = $_POST["password"];
-$email = $_POST["email"];
-$city = $_POST["city"];
+$u_name = htmlspecialchars($_POST["uname"]);
+$name = htmlspecialchars($_POST["name"]);
+$password = htmlspecialchars($_POST["password"]);
+$email = htmlspecialchars($_POST["email"]);
+$city = htmlspecialchars($_POST["city"]);
 $checkDup= false;
 
 
