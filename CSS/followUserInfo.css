@@ -3,9 +3,10 @@ div#title {
     display: block;
 }
 
-#title h1 {
+div#title h1 {
     float: left;
     margin-right: 15px;
+    font-weight: bold;
 }
 
 div#followbutton {
