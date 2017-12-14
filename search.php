@@ -26,7 +26,7 @@
 	<h1>Search Page</h1>
     </div>
 
-    <div id="search">
+    <div id="search" style="margin-top: 10px; margin-bottom: 50px; margin-left: 90px;">
 	<form action="search.php" method="get">
 	    <input id="searchbar" type="text" name="keyword" placeholder="Enter anything you like">
 	    <button id="searchbutton" type="submit">&#9906</button><br>
@@ -36,7 +36,7 @@
 	    <label for="option4"><input id="option4" type="radio" name="searchtype" value="Username" />User</label>
 	</form>
     </div>
-    <div id="searchresult">
+    <div id="searchresult" style="margin-left: 90px; margin-top:50px;">
 <?php
     if (isset($_GET['searchtype']) && $_GET['searchtype'] == "Username") {
 	$search_user= $conn->prepare("SELECT * 

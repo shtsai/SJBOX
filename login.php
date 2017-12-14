@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if (isset($_SESSION['Username'])) {
+	header('Location: userInfo.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -37,7 +43,7 @@ function showPassword() {
     	    <div class="col-xs-12">
         	    <div class="form-wrap">
                 <h1>Log in with your name and passward</h1>
-                    <form role="form" action="login.php" method="get" id="login-form" autocomplete="off">
+                    <form role="form" action="login.php" method="post" id="login-form" autocomplete="off">
                         <div class="form-group">
                             <label for="name" class="sr-only">Name</label>
                             <input type="name" name="name" id="name" class="form-control" placeholder="Name">
@@ -70,12 +76,9 @@ function showPassword() {
 	die("Connection failed: " . $conn->connect_error);
     }
 
-    if (isset($_GET['name'])) {
-	// get artist info
-        //echo "into get artist info";
-	$userName = $_GET['name'];
-        $password = $_GET['password'];
-        //echo $password;
+    if (isset($_POST['name'])) {
+	$userName = $_POST['name'];
+        $password = $_POST['password'];
 	$user_info = $conn->prepare("SELECT Username 
 				       FROM User 
 				       WHERE Username = ?");
@@ -100,7 +103,6 @@ function showPassword() {
             }
 	    else{
                 //set session
-                session_start();
                 $_SESSION['Username'] = $result['Username'];
                 $r1->close();
 		echo "<script>alert('Success!');</script>";
