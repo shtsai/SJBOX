@@ -11,7 +11,14 @@ div#search {
     margin-bottom: 50px;
     margin-left: 90px;
     margin-right: 90px;
+    margin: auto;
 }
+
+.center {
+    margin: auto;
+    width: 10%;
+}
+
 #searchbar {
     width: 600px;
     height: 40px;
