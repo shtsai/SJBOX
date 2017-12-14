@@ -41,7 +41,7 @@
     $result = $search_track->get_result();
     echo "<div id=\"info\">";
     while ($row = $result->fetch_assoc()) {
-	echo "<h1>" . $row['TrackName'] . "</h1>";
+	echo "<h1 style=\"font-weight: bold\">" . $row['TrackName'] . "</h1>";
 	echo "<p id=\"artistTitle\">Artist: <a href=\"artist.php?artist=" . $row['ArtistId'] . "\">" .$row['ArtistTitle'] . "</a></p>";
 	echo "<p id=\"albumname\">Album: <a href=\"album.php?album=" . $row['AlbumId'] . "\">" .$row['AlbumName'] . "</a></p>";
 	$seconds = $row['TrackDuration'] / 1000;

@@ -23,13 +23,8 @@
 </head>
 
 <body>
-<?php include("./includes/navigation_bar.html"); ?>
-
-    <div id="title">
-	<h1>Playlist Page</h1>
-    </div>
-
-<?php
+<?php 
+    include("./includes/navigation_bar.html"); 
     // get creator info
     $playlistId = $_GET['playlist'];
     $playlist_info = $conn->prepare("SELECT *
@@ -46,7 +41,7 @@
 	echo "<p id=\"error\">Sorry, this is a private playlist.</p>";
     } else {
 	echo "<div id=\"info\">";
-	echo "<p id=\"playlistname\"><a href=\"playlist.php?playlist=" . $playlistId . "\">" .$row['PlaylistTitle'] . "</a></p>";
+	echo "<h1 style=\"font-weight: bold\">" . $row['PlaylistTitle'] . "</h1>";
 	echo "<p id=\"creator\">Created by: <a href=\"followUserInfo.php?name=" . $row['Username'] . "\">" .$row['Username'] . "</a></p>";
 	echo "<p id=\"date\">Create date: " . $row['PlaylistDate'] . "</p>";
 	echo "<p id=\"status\">Status: " . $row['PlaylistStatus'] . "</p>";
