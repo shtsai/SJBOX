@@ -33,7 +33,7 @@
                             <input type="text" name="title" id="title" class="form-control" placeholder="Playlist Title">
                         </div>
                         <div class="form-group">
-                            <label for="public"><input type="radio" name="status" id="status"  value="public">Public</label>
+                            <label for="public"><input type="radio" name="status" id="status"  value="public" checked>Public</label>
                             <label for="private"><input type="radio" name="status" id="status" value="private">Private</label>
                         </div>
                         <input type="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Create">
