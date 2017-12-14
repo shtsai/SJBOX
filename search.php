@@ -44,11 +44,11 @@
 				      WHERE Username LIKE ? 
 				      OR Name LIKE ?
 				      OR City LIKE ?");
-	$keyword = "%" . $_GET['keyword'] . "%";
+	$keyword = "%" . htmlspecialchars($_GET['keyword']) . "%";
 	$search_user->bind_param('sss', $keyword, $keyword, $keyword);
 	$search_user->execute();
 	$result = $search_user->get_result();
-	echo $result->num_rows . " results:";
+	echo $result->num_rows . " results for \"" . htmlspecialchars($_GET['keyword']) . "\":";
 	echo "<table id=\"resultTable\">";
 	echo "<tr>";
 	echo "<th>Username</th>";
@@ -70,11 +70,11 @@
 	$search_track = $conn->prepare("SELECT TrackId, TrackName, ArtistTitle, ArtistId, AlbumId, AlbumName
 					FROM Artist NATURAL JOIN Track NATURAL JOIN Album
 					WHERE " . $searchtype . " LIKE ?");
-	$keyword = "%" . $_GET['keyword'] . "%";
+	$keyword = "%" . htmlspecialchars($_GET['keyword']) . "%";
 	$search_track->bind_param('s', $keyword);
 	$search_track->execute();
 	$result = $search_track->get_result();
-	echo $result->num_rows . " results:";
+	echo $result->num_rows . " results for \"" . htmlspecialchars($_GET['keyword']) . "\":";
 	echo "<table id=\"resultTable\">";
 	echo "<tr>";
 	echo "<th>Track Name</th>";
