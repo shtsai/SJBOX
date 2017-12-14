@@ -11,7 +11,7 @@
     $playlist = $conn->prepare("INSERT INTO Playlist (PlaylistId, Username, PlaylistTitle, PlaylistDate, PlaylistStatus) VALUES (?, ?, ?, ?, ?)");
     $date = date('Y-m-d H:i:s', time());
     $playlistId = $_SESSION['Username'] . $date;
-    $playlist->bind_param('sssss', $playlistId, $_SESSION['Username'], $_POST['title'], $date, $_POST['status']);
+    $playlist->bind_param('sssss', $playlistId, $_SESSION['Username'], htmlspecialchars($_POST['title']), $date, $_POST['status']);
     $playlist->execute();
     $playlist->close();
 
