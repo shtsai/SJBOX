@@ -2,6 +2,10 @@ div#info {
     margin-left: 90px;
 }
 
+#info h1 {
+    font-weight: bold;
+}
+
 p#artistTitle {
     font-size: 120%;
     margin: 0px;

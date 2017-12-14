@@ -35,9 +35,8 @@
     $artist_info->execute();
     $info_result = $artist_info->get_result();
     echo "<div id=\"info\">";
-    echo "<h1>Artist Page</h1>";
     while ($row = $info_result->fetch_assoc()) {
-	echo "<p id=\"artistTitle\"><a href=\"artist.php?artist=" . $artistId . "\">" .$row['ArtistTitle'] . "</a></p>";
+	echo "<h1 style=\"font-weight: bold\">" .$row['ArtistTitle'] . "</h1>";
 	echo "<p id=\"description\">" . $row['ArtistDescription'] . "</p>";
 	$artistTitle = $row['ArtistTitle'];
     }
