@@ -1,11 +1,3 @@
-<?php
-    // check whether the user has logged in
-    session_start();
-    if (isset($_SESSION['Username'])) {
-	header("Location: userInfo.php");
-    }
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,22 +8,22 @@
 
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-      <link rel="stylesheet" href="./CSS/login.css">	
-
+      <!-- login CSS -->
+      <style><?php include 'CSS/login.css'; ?></style> 
 <script>
 function showPassword() {
     
-    var key_attr = $('#key').attr('type');
+    var key_attr = $('#password').attr('type');
     
     if(key_attr != 'text') {
         
         $('.checkbox').addClass('show');
-        $('#key').attr('type', 'text');
+        $('#password').attr('type', 'text');
         
     } else {
         
         $('.checkbox').removeClass('show');
-        $('#key').attr('type', 'password');
+        $('#password').attr('type', 'password');
         
     }
     
@@ -43,23 +35,26 @@ function showPassword() {
     <div class="container">
     	<div class="row">
     	    <div class="col-xs-12">
-        	<div class="form-wrap">
-		    <h1>Log in with your name and passward</h1>
-                    <form role="form" action="login.php" method="post" id="login-form" autocomplete="off">
-                    <div class="form-group">
-                        <label for="name" class="sr-only">Name</label>
-                        <input type="name" name="name" id="name" class="form-control" placeholder="Username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="sr-only">Password</label>
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Password">
-                     </div>
-                     <div class="checkbox"> <span class="character-checkbox" onclick="showPassword()"></span> <span class="label">Show password</span> </div>
+        	    <div class="form-wrap">
+                <h1>Log in with your name and passward</h1>
+                    <form role="form" action="login.php" method="get" id="login-form" autocomplete="off">
+                        <div class="form-group">
+                            <label for="name" class="sr-only">Name</label>
+                            <input type="name" name="name" id="name" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="sr-only">Password</label>
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                        </div>
+                        <div class="checkbox"> <span class="character-checkbox" onclick="showPassword()"></span> <span class="label">Show password</span> </div>
                         <input type="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Log in">
                     </form>
+		<!--<a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a> -->
 		    <a href="register.php">Register now</a>
-        	</div>
-    	    </div> <!-- /.col-xs-12 -->
+
+                    <hr>
+        	    </div>
+    		</div> <!-- /.col-xs-12 -->
     	</div> <!-- /.row -->
     </div> <!-- /.container -->
 </section>
@@ -75,10 +70,12 @@ function showPassword() {
 	die("Connection failed: " . $conn->connect_error);
     }
 
-    if (isset($_POST['name'])) {
+    if (isset($_GET['name'])) {
 	// get artist info
-	$userName = $_POST['name'];
-        $password = $_POST['password'];
+        //echo "into get artist info";
+	$userName = $_GET['name'];
+        $password = $_GET['password'];
+        //echo $password;
 	$user_info = $conn->prepare("SELECT Username 
 				       FROM User 
 				       WHERE Username = ?");
@@ -87,7 +84,7 @@ function showPassword() {
         $r = $user_info->get_result();
         $r2 = $r->fetch_assoc();
         if(!$r2){
-            echo "<script>alert('Invalid Username or Password.');</script>";
+            echo "<script>alert('Your name is wrong.');</script>";
             echo "<script>window.location.href= 'login.php';</script>";
         }
         else{
@@ -98,11 +95,12 @@ function showPassword() {
             $r3 = $r1->get_result();
             $result = $r3->fetch_assoc();
             if(!$result){
-                echo "<script>alert('Invalid Username or Password.');</script>";
+                echo "<script>alert('Please check your password.');</script>";
                 echo "<script>window.location.href= 'login.php';</script>";
             }
 	    else{
                 //set session
+                session_start();
                 $_SESSION['Username'] = $result['Username'];
                 $r1->close();
 		echo "<script>alert('Success!');</script>";
