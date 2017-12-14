@@ -27,7 +27,7 @@
     if (!isset($_GET['name']) || $_GET['name'] == "" || $_GET['name'] == $_SESSION['Username']) {
 	$userName = $_SESSION['Username'];
 	echo "<div id=\"title\">";
-	echo "<h1>" . $userName . "'s Page</h1>";
+	echo "<h1 style=\"font-weight: bold\">" . $userName . "'s Page</h1>";
 	echo "</div><br><br><br>";
 	
     } else {
@@ -125,7 +125,7 @@
     $playlist->execute();
     $playlist_result = $playlist->get_result();
     echo "<div id=\"playlist\">";
-    echo "<h4>Your playlists:</h4>";
+    echo "<h4>Playlists:</h4>";
     if ($userName == $_SESSION['Username']) {
 	echo "<div id=\"followbutton\">"; 
 	echo "<form action=\"playlist_create.php\" method=\"get\">";
