@@ -97,15 +97,15 @@ CREATE TABLE `Play` (
     `Username` VARCHAR(15) NOT NULL,
     `TrackId` VARCHAR(30) NOT NULL,
     `PlayTime` DATETIME NOT NULL,
-    `PlaylistId` VARCHAR(30) NULL,
-    `AlbumId` VARCHAR(30) NULL,
+    `PlaylistId` INT NULL,
     PRIMARY KEY (`Username`, `TrackId`, `PlayTime`),
     FOREIGN KEY (`Username`)
         REFERENCES `User` (`Username`),
     FOREIGN KEY (`TrackId`)
-        REFERENCES `Track` (`TrackId`)
+        REFERENCES `Track` (`TrackId`),
+    FOREIGN KEY (`PlaylistId`)
+	REFERENCES `Playlist` (`PlaylistId`)
 );
-
 
 
 INSERT INTO `User` (`Username`, `Name`, `Email`, `City`, `Password`) VALUES ('JJJ', 'Jennie', 'jennie@gmail.com', 'New York', '123456');
@@ -151,18 +151,18 @@ INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('VVV', 'JJ
 INSERT INTO `Follow` (`Username1`, `Username2`, `FollowDate`) VALUES ('CCC', 'JJJ', '2017-02-01 12:01:00');
 
 
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 12:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '4BHzQ9C00ceJxfG16AlNWb', '2017-12-01 12:04:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '0QLXkoV7vX86QEibgLe6zQ', '2017-12-01 12:07:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '7IWkJwX9C0J7tHurTD7ViL', '2017-12-01 12:10:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '4vb4mFvYsr2h6enhjJsq9Y', '2017-12-01 12:13:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '6oQRvWaoFDJpTTnaWdzhXt', '2017-12-01 12:16:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('JJJ', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 12:20:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('MMM', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 11:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('SSS', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 10:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('CCC', '4BHzQ9C00ceJxfG16AlNWb', '2017-12-01 09:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('VVV', '0QLXkoV7vX86QEibgLe6zQ', '2017-12-01 08:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('CCC', '7IWkJwX9C0J7tHurTD7ViL', '2017-12-01 07:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('MMM', '4vb4mFvYsr2h6enhjJsq9Y', '2017-12-01 06:01:00', NULL, NULL);
-INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`, `AlbumId`) VALUES ('NancyInQueens', '6oQRvWaoFDJpTTnaWdzhXt', '2017-12-21 05:01:00', NULL, NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 12:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '4BHzQ9C00ceJxfG16AlNWb', '2017-12-01 12:04:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '0QLXkoV7vX86QEibgLe6zQ', '2017-12-01 12:07:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '7IWkJwX9C0J7tHurTD7ViL', '2017-12-01 12:10:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '4vb4mFvYsr2h6enhjJsq9Y', '2017-12-01 12:13:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '6oQRvWaoFDJpTTnaWdzhXt', '2017-12-01 12:16:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('JJJ', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 12:20:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('MMM', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 11:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('SSS', '4sPmO7WMQUAf45kwMOtONw', '2017-12-01 10:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('CCC', '4BHzQ9C00ceJxfG16AlNWb', '2017-12-01 09:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('VVV', '0QLXkoV7vX86QEibgLe6zQ', '2017-12-01 08:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('CCC', '7IWkJwX9C0J7tHurTD7ViL', '2017-12-01 07:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('MMM', '4vb4mFvYsr2h6enhjJsq9Y', '2017-12-01 06:01:00', NULL);
+INSERT INTO `Play` (`Username`, `TrackId`, `PlayTime`, `PlaylistId`) VALUES ('NancyInQueens', '6oQRvWaoFDJpTTnaWdzhXt', '2017-12-21 05:01:00', NULL);
 
